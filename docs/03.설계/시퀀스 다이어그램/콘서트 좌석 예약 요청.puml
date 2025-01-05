@@ -1,0 +1,94 @@
+@startuml
+actor 사용자
+participant "ReservationToken 객체" as Token
+participant "BalanceHistory 객체" as History
+participant "ConcertSchedule 객체" as Schedule
+participant "ConcertSeat 객체" as Seat
+participant "Payments 객체" as Payments
+
+사용자 -> Token: UUID 확인 요청
+alt 활성 토큰 있음
+    Token --> 사용자: 기존 토큰 반환
+else 활성 토큰 없음
+    사용자 -> Token: 새로운 토큰 생성 요청
+    activate Token
+    Token -> Token: 새 토큰 생성
+    Token --> 사용자: 새 토큰 반환
+    deactivate Token
+    사용자 -> History: 잔액 충전 요청(UUID, Amount)
+    activate History
+    History -> History: 잔액 충전 기록 저장
+    History --> 사용자: 잔액 충전 완료
+    deactivate History
+end
+
+사용자 -> Schedule: 예약 가능한 날짜 조회
+activate Schedule
+Schedule -> Schedule: 날짜 리스트 반환
+Schedule --> 사용자: 예약 가능한 날짜 반환
+deactivate Schedule
+
+사용자 -> Schedule: 날짜 선택(Date)
+activate Schedule
+Schedule --> 사용자: 선택된 날짜 저장
+deactivate Schedule
+
+사용자 -> Seat: 예약 가능한 좌석 조회(Date)
+activate Seat
+Seat -> Seat: 좌석 상태 확인
+alt 예약 가능한 좌석 없음
+    Seat --> 사용자: "예약 가능한 좌석이 없습니다"
+    deactivate Seat
+else 예약 가능한 좌석 있음
+    Seat --> 사용자: 좌석 리스트 반환
+    deactivate Seat
+end
+
+사용자 -> Seat: 좌석 선택 및 예약 요청(UUID, SeatID)
+activate Seat
+Seat -> Token: 대기열 검증(UUID)
+alt 대기열 검증 실패
+    Token --> 사용자: "대기열 대기 중입니다"
+    break
+else 대기열 검증 성공
+    Seat -> Seat: 좌석 상태 확인(SeatID)
+    alt 좌석 예약 불가
+        Seat --> 사용자: "이미 예약된 좌석입니다"
+        deactivate Seat
+    else 좌석 예약 가능
+        Token -> Token: 잔액 확인(UUID)
+        alt 잔액 부족
+            Token --> 사용자: "잔액 부족입니다"
+            deactivate Seat
+            사용자 -> History: 잔액 충전 요청(UUID, Amount)
+            activate History
+            History -> History: 잔액 충전 기록 저장
+            History --> 사용자: 잔액 충전 완료
+            deactivate History
+        else 잔액 충분
+            Seat -> Seat: 좌석 상태('RESERVED')로 변경 및 만료 시간 설정
+            Seat --> 사용자: "좌석 예약 완료"
+        end
+        deactivate Seat
+    end
+end
+
+사용자 -> Payments: 결제 요청(UUID, SeatID)
+activate Payments
+Payments -> Token: 대기열 검증(UUID)
+alt 대기열 검증 실패
+    Payments --> 사용자: "대기열 토큰이 만료되었습니다"
+    Seat -> Seat: 좌석 상태('AVAILABLE')로 복구
+    break
+else 대기열 검증 성공
+    alt 결제 실패
+        Payments --> 사용자: "결제 실패"
+        Seat -> Seat: 좌석 상태('AVAILABLE')로 복구
+        Token -> Token: 토큰 상태('EXPIRED')로 변경
+    else 결제 성공
+        Payments -> Seat: 좌석 상태('CONFIRMED')로 변경
+        Payments --> 사용자: "결제 성공"
+    end
+end
+deactivate Payments
+@enduml

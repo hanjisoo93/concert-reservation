@@ -1,0 +1,13 @@
+@startuml
+[*] --> AVAILABLE: 초기 좌석 상태
+AVAILABLE: 예약 가능 상태
+
+AVAILABLE --> RESERVED: [좌석 예약 요청 성공] / "좌석 상태 변경"
+RESERVED: 예약 중 상태 (5분 타이머)
+
+RESERVED --> AVAILABLE: [예약 만료 (5분 초과) OR 결제 실패] / "좌석 상태 초기화"
+RESERVED --> CONFIRMED: [결제 성공] / "좌석 상태 변경"
+CONFIRMED: 예약 완료 상태
+
+CONFIRMED --> [*]: 예약 종료 (소유권 배정 완료)
+@enduml
