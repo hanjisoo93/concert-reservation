@@ -27,7 +27,7 @@ class TokenRepositoryTest {
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(5).truncatedTo(ChronoUnit.MICROS);
         Token tokenBuild = Token.builder()
                 .uuid("test-uuid")
-                .userId("jisoohan")
+                .userId(1L)
                 .status(TokenStatus.ACTIVE)
                 .expiredAt(expiredAt)
                 .build();
