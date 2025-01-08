@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum TokenStatus {
 
+    WAIT("대기"),
     ACTIVE("활성"),
     EXPIRED("만료");
 
