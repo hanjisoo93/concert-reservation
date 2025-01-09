@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import kr.hhplus.be.server.api.aop.ValidateToken;
 import kr.hhplus.be.server.api.controller.concert.seat.dto.ConcertSeatResponse;
 import kr.hhplus.be.server.api.service.concert.seat.ConcertSeatService;
 import kr.hhplus.be.server.common.error.ErrorResponse;
@@ -29,6 +30,7 @@ public class ConcertSeatController {
             @ApiResponse(responseCode = "200", description = "성공적으로 좌석 목록을 반환합니다. 결과는 배열 형식으로 제공되며, 각 항목은 좌석 정보를 나타냅니다.", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ConcertSeatResponse.class)))),
             @ApiResponse(responseCode = "404", description = "주어진 콘서트 스케줄 ID에 해당하는 좌석 정보가 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @GetMapping
+    @ValidateToken
     public ResponseEntity<Object> getConcertSeats(@RequestParam("concertScheduleId") Long concertScheduleId) {
         List<ConcertSeatResponse> concertSeats = concertSeatService.getConcertSeats(concertScheduleId);
         if (concertSeats == null || concertSeats.isEmpty()) {
