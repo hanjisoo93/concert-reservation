@@ -9,7 +9,7 @@ public enum ReservationStatus {
 
     PENDING("예약 중"),
     SUCCESS("성공"),
-    FAIL("실패");
+    FAILED("실패");
 
     private final String text;
 }
