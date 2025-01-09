@@ -21,7 +21,7 @@ public class TokenResponse {
 
     @Schema(required = true, description = "사용자 ID")
     @NotNull
-    private String userId;
+    private Long userId;
 
     @Schema(required = true, description = "토큰 상태")
     @NotNull
@@ -32,7 +32,7 @@ public class TokenResponse {
     private LocalDateTime expiredAt;
 
     @Builder
-    private TokenResponse(Long id, String uuid, String userId, TokenStatus status, LocalDateTime expiredAt) {
+    private TokenResponse(Long id, String uuid, Long userId, TokenStatus status, LocalDateTime expiredAt) {
         this.id = id;
         this.uuid = uuid;
         this.userId = userId;

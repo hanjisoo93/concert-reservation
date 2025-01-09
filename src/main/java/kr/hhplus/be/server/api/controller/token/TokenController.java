@@ -29,7 +29,7 @@ public class TokenController {
             @ApiResponse(responseCode = "200", description = "정상적으로 토큰을 조회 했습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenResponse.class))),
             @ApiResponse(responseCode = "404", description = "유효한 토큰을 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @GetMapping(value = "/{userId}", produces = {"application/json"})
-    public ResponseEntity<Object> getToken(@PathVariable String userId) {
+    public ResponseEntity<Object> getToken(@PathVariable Long userId) {
         TokenResponse tokenResponse = tokenService.getToken(userId, TokenStatus.ACTIVE);
 
         if(tokenResponse == null) {

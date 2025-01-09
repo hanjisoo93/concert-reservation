@@ -19,7 +19,7 @@ public class Token {
 
     private String uuid;
 
-    private String userId;
+    private Long userId;
 
     @Enumerated(EnumType.STRING)
     private TokenStatus status;
@@ -27,18 +27,18 @@ public class Token {
     private LocalDateTime expiredAt;
 
     @Builder
-    private Token(String uuid, String userId, TokenStatus status, LocalDateTime expiredAt) {
+    private Token(String uuid, Long userId, TokenStatus status, LocalDateTime expiredAt) {
         this.uuid = uuid;
         this.userId = userId;
         this.status = status;
         this.expiredAt = expiredAt;
     }
 
-    public static Token createToken(String userId) {
+    public static Token createToken(Long userId) {
         return Token.builder()
                 .uuid(generateUuid())
                 .userId(userId)
-                .status(TokenStatus.ACTIVE)
+                .status(TokenStatus.WAIT)
                 .expiredAt(LocalDateTime.now().plusMinutes(30)) // 기본 30분 유지
                 .build();
     }

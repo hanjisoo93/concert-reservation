@@ -27,30 +27,30 @@ class TokenRepositoryTest {
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(5).truncatedTo(ChronoUnit.MICROS);
         Token tokenBuild = Token.builder()
                 .uuid("test-uuid")
-                .userId("jisoohan")
+                .userId(1L)
                 .status(TokenStatus.ACTIVE)
                 .expiredAt(expiredAt)
                 .build();
-        Mockito.when(tokenRepository.findAllByUserIdAndStatus("jisoohan", TokenStatus.ACTIVE))
+        Mockito.when(tokenRepository.findAllByUserIdAndStatus(1L, TokenStatus.ACTIVE))
                 .thenReturn(tokenBuild);
 
         // when
-        Token token = tokenRepository.findAllByUserIdAndStatus("jisoohan", tokenBuild.getStatus());
+        Token token = tokenRepository.findAllByUserIdAndStatus(1L, tokenBuild.getStatus());
 
         // then
         Assertions.assertThat(token)
                 .isNotNull()
                 .extracting("uuid", "userId", "status", "expiredAt")
-                .containsExactlyInAnyOrder("test-uuid", "jisoohan", TokenStatus.ACTIVE, expiredAt);
+                .containsExactlyInAnyOrder("test-uuid", 1L, TokenStatus.ACTIVE, expiredAt);
 
-        Mockito.verify(tokenRepository).findAllByUserIdAndStatus("jisoohan", TokenStatus.ACTIVE);
+        Mockito.verify(tokenRepository).findAllByUserIdAndStatus(1L, TokenStatus.ACTIVE);
     }
 
     @DisplayName("사용자 ID로 토큰 조회 시 토큰이 없다면 Exception 처리를 한다")
     @Test
     void findAllByUserIdAndStatus_whenTokenNotFound_throwsException() {
         // given
-        String userId = "jisoohan";
+        Long userId = 1L;
         Mockito.when(tokenRepository.findAllByUserIdAndStatus(userId, TokenStatus.ACTIVE))
                 .thenReturn(null); // 토큰이 없는 경우를 Mocking
 

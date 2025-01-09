@@ -17,7 +17,7 @@ class TokenTest {
     @DisplayName("토큰 생성 성공")
     void createToken_success() {
         // given
-        String userId = "jisoohan";
+        Long userId = 1L;
 
         // when
         Token token = Token.createToken(userId);
@@ -26,7 +26,7 @@ class TokenTest {
         assertThat(token)
                 .isNotNull()
                 .extracting("userId", "status")
-                .containsExactly(userId, TokenStatus.ACTIVE);
+                .containsExactly(userId, TokenStatus.WAIT);
 
         assertThat(token.getExpiredAt()).isAfter(LocalDateTime.now());
         assertThat(token.isExpired()).isFalse();
@@ -36,7 +36,7 @@ class TokenTest {
     @DisplayName("토큰 만료 처리 성공")
     void expireToken_success() {
         // given
-        Token token = Token.createToken("jisoohan");
+        Token token = Token.createToken(1L);
 
         // when
         token.expireToken();
@@ -49,7 +49,7 @@ class TokenTest {
     @DisplayName("이미 만료된 토큰을 다시 만료 처리 시 예외 발생")
     void expireToken_alreadyExpired_throwsException() {
         // given
-        Token token = Token.createToken("jisoohan");
+        Token token = Token.createToken(1L);
         token.expireToken();
 
         // when & then
@@ -64,7 +64,7 @@ class TokenTest {
         // given
         Token token = Token.builder()
                 .uuid("test-uuid")
-                .userId("jisoohan")
+                .userId(1L)
                 .status(TokenStatus.ACTIVE)
                 .expiredAt(LocalDateTime.now().minusMinutes(1)) // 과거 시간
                 .build();
@@ -82,7 +82,7 @@ class TokenTest {
         // given
         Token token = Token.builder()
                 .uuid("test-uuid")
-                .userId("jisoohan")
+                .userId(1L)
                 .status(TokenStatus.ACTIVE)
                 .expiredAt(LocalDateTime.now().plusMinutes(30)) // 미래 시간
                 .build();
