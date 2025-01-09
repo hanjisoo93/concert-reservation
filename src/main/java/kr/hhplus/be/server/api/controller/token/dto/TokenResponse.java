@@ -31,13 +31,18 @@ public class TokenResponse {
     @NotNull
     private LocalDateTime expiredAt;
 
+    @Schema(description = "토큰 생성 시간")
+    @NotNull
+    private LocalDateTime createdAt;
+
     @Builder
-    private TokenResponse(Long id, String uuid, Long userId, TokenStatus status, LocalDateTime expiredAt) {
+    private TokenResponse(Long id, String uuid, Long userId, TokenStatus status, LocalDateTime expiredAt, LocalDateTime createdAt) {
         this.id = id;
         this.uuid = uuid;
         this.userId = userId;
         this.status = status;
         this.expiredAt = expiredAt;
+        this.createdAt = createdAt;
     }
 
     public static TokenResponse of(Token token) {
@@ -47,6 +52,7 @@ public class TokenResponse {
                 .userId(token.getUserId())
                 .status(token.getStatus())
                 .expiredAt(token.getExpiredAt())
+                .createdAt(token.getCreatedAt())
                 .build();
     }
 }
