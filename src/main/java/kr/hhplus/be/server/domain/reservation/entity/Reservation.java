@@ -60,8 +60,4 @@ public class Reservation {
         }
         this.expiredAt = expiredAt;
     }
-
-    public boolean isExpired(LocalDateTime expiredAt) {
-        return expiredAt.isBefore(LocalDateTime.now());
-    }
 }
