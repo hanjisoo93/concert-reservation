@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import kr.hhplus.be.server.api.aop.ValidateToken;
 import kr.hhplus.be.server.api.controller.reservation.dto.ReservationConfirmRequest;
 import kr.hhplus.be.server.api.controller.reservation.dto.ReservationReserveRequest;
 import kr.hhplus.be.server.common.error.ErrorResponse;
@@ -26,6 +27,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "409", description = "요청한 좌석이 이미 예약되었습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping(value = "/reserve", consumes = "application/json", produces = "application/json")
+    @ValidateToken
     public ResponseEntity<String> reserveReservation(@RequestBody ReservationReserveRequest reservationRequest){
         return ResponseEntity.ok("좌석이 성공적으로 예약 요청 되었습니다.");
     }
@@ -38,6 +40,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "409", description = "요청한 좌석이 이미 예약 상태로 충돌했습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping(value = "/confirm", consumes = "application/json", produces = "application/json")
+    @ValidateToken
     public ResponseEntity<String> confirmReservation(@RequestBody ReservationConfirmRequest reservationRequest){
         return ResponseEntity.ok("콘서트 좌석 예약 결과가 성공적으로 처리 되었습니다.");
     }
