@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import kr.hhplus.be.server.api.aop.ValidateToken;
 import kr.hhplus.be.server.api.controller.payment.dto.PaymentRequest;
 import kr.hhplus.be.server.api.controller.payment.dto.PaymentResponse;
 import kr.hhplus.be.server.api.service.payment.PaymentService;
@@ -30,7 +29,6 @@ public class PaymentController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "요청된 사용자를 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @PostMapping
-    @ValidateToken
     public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest paymentRequest) {
         PaymentResponse payment = paymentService.createPayment(
                 paymentRequest.getUserId(),

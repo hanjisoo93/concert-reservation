@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import kr.hhplus.be.server.api.aop.ValidateToken;
 import kr.hhplus.be.server.api.service.concert.schedule.ConcertScheduleService;
 import kr.hhplus.be.server.api.controller.concert.schedule.dto.ConcertScheduleResponse;
 import kr.hhplus.be.server.common.error.ErrorResponse;
@@ -33,7 +32,6 @@ public class ConcertScheduleController {
             @ApiResponse(responseCode = "404", description = "해당 콘서트의 콘서트 스케줄을 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping(value = "/{concertId}", consumes = "application/json", produces = "application/json")
-    @ValidateToken
     public ResponseEntity<Page<ConcertScheduleResponse>> getConcertSchedules(@PathVariable(name = "concertId") Long concertId,
                                                                              Pageable pageable) {
         Page<ConcertScheduleResponse> concertSchedules = concertScheduleService.getConcertSchedules(concertId, pageable);
