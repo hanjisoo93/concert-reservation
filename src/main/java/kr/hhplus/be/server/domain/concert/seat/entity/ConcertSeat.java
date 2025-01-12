@@ -33,4 +33,11 @@ public class ConcertSeat {
         this.price = price;
         this.status = status;
     }
+
+    public void updateStatus(ConcertSeatStatus status) {
+        if(status == null) {
+            throw new IllegalArgumentException("유효하지 않은 좌석 상태입니다.");
+        }
+        this.status = status;
+    }
 }
