@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import kr.hhplus.be.server.api.aop.ValidateToken;
 import kr.hhplus.be.server.api.controller.point.dto.PointHistoryRequest;
 import kr.hhplus.be.server.api.controller.point.dto.PointHistoryResponse;
 import kr.hhplus.be.server.api.controller.point.dto.PointRequest;
@@ -34,6 +35,7 @@ public class PointController {
             @ApiResponse(responseCode = "200", description = "성공적으로 잔액을 조회했습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PointResponse.class))),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @GetMapping(value = "/{userId}")
+    @ValidateToken
     public ResponseEntity<Object> getPoint(@PathVariable Long userId) {
         PointResponse point = pointService.getPoint(userId);
 
