@@ -70,4 +70,13 @@ public class TokenService {
             return newToken;
         }
     }
+
+    @Transactional
+    public void updateTokenExpiredAt(String uuid) {
+        tokenRepository.findByUuid(uuid)
+                .ifPresent(token -> {
+                    token.updateExpiredAt(LocalDateTime.now().plusMinutes(30));
+                    tokenRepository.save(token);
+                });
+    }
 }

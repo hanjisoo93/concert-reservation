@@ -43,7 +43,7 @@ public class ReservationScheduler {
             }
 
             // 4. 토큰 만료 처리
-            Optional<Token> optionalToken = tokenRepository.findFirstByUserIdAndStatusForUpdate(reservation.getUserId(), TokenStatus.ACTIVE);
+            Optional<Token> optionalToken = tokenRepository.findLatestActiveTokenByUserId(reservation.getUserId(), TokenStatus.ACTIVE);
             Token token = optionalToken.orElseThrow(() -> new IllegalStateException("유효한 토큰이 없습니다."));
 
             if(token != null) {

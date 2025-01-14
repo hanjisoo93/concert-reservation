@@ -56,7 +56,7 @@ public class PaymentFacade {
         reservation.updateStatus(ReservationStatus.SUCCESS);
 
         // 4. 토큰 만료 처리
-        Token token = tokenRepository.findFirstByUserIdAndStatusForUpdate(reservation.getUserId(), TokenStatus.ACTIVE)
+        Token token = tokenRepository.findLatestActiveTokenByUserId(reservation.getUserId(), TokenStatus.ACTIVE)
                 .orElseThrow(() -> new IllegalStateException("유효한 토큰이 없습니다."));
         token.expireToken();
     }

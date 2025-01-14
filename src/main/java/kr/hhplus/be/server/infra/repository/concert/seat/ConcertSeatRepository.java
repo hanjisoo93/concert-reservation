@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface ConcertSeatRepository extends JpaRepository<ConcertSeat,Long> {
 
-    ConcertSeat findAllById(Long concertSeatId);
+    Optional<ConcertSeat> findById(Long concertSeatId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT cs FROM ConcertSeat cs WHERE cs.id = :seatId")

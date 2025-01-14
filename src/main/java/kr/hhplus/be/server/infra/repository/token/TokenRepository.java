@@ -17,13 +17,9 @@ import java.util.Optional;
 public interface TokenRepository extends JpaRepository<Token, Long> {
     Token findAllByUserIdAndStatus(Long userId, TokenStatus status);
 
-    // 가장 최근에 생성된 토큰 조회
-    @Query("SELECT t FROM Token t WHERE t.userId = :userId ORDER BY t.createdAt DESC")
-    Optional<Token> findFirstByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId);
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT t FROM Token t WHERE t.userId = :userId and t.status = :status ORDER BY t.createdAt DESC")
-    Optional<Token> findFirstByUserIdAndStatusForUpdate(@Param("userId") Long userId, @Param("status") TokenStatus status);
+    Optional<Token> findLatestActiveTokenByUserId(@Param("userId") Long userId, @Param("status") TokenStatus status);
 
     int countByStatus(TokenStatus status);
 

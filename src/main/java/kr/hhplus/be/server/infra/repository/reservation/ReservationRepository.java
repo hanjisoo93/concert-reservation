@@ -22,4 +22,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllByExpiredAtBeforeAndStatusWithLock(@Param("now") LocalDateTime now, @Param("status") ReservationStatus status);
 
     long countByStatus(ReservationStatus reservationStatus);
+
+    @Query("SELECT COUNT(r) > 0 FROM Reservation r WHERE r.seatId = :seatId AND r.status IN (:statuses)")
+    boolean existsSeatReservation(@Param("seatId") Long seatId, @Param("statuses") List<ReservationStatus> statuses);
 }
