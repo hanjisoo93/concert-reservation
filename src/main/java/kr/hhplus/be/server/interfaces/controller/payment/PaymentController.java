@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.application.aop.ValidateToken;
+import kr.hhplus.be.server.domain.entity.payment.Payment;
 import kr.hhplus.be.server.interfaces.controller.payment.dto.PaymentRequest;
 import kr.hhplus.be.server.interfaces.controller.payment.dto.PaymentResponse;
 import kr.hhplus.be.server.domain.service.payment.PaymentService;
@@ -32,11 +33,11 @@ public class PaymentController {
     @PostMapping
     @ValidateToken
     public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest paymentRequest) {
-        PaymentResponse payment = paymentService.createPayment(
+        Payment payment = paymentService.createPayment(
                 paymentRequest.getUserId(),
                 paymentRequest.getReservationId(),
                 paymentRequest.getAmount()
         );
-        return ResponseEntity.ok(payment);
+        return ResponseEntity.ok(PaymentResponse.of(payment));
     }
 }

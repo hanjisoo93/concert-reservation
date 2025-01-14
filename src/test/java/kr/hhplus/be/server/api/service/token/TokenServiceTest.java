@@ -45,7 +45,7 @@ class TokenServiceTest {
         Long userId = 1L;
 
         // when
-        TokenResponse token = tokenService.issueWaitToken(userId);
+        Token token = tokenService.issueWaitToken(userId);
 
         // then
         assertThat(token).isNotNull();
@@ -69,7 +69,7 @@ class TokenServiceTest {
         tokenRepository.save(activeToken);
 
         // when
-        TokenResponse tokenResponse = tokenService.issueWaitToken(userId);
+        Token tokenResponse = tokenService.issueWaitToken(userId);
 
         // then
         assertThat(tokenResponse.getUuid()).isEqualTo("active-uuid");
@@ -90,7 +90,7 @@ class TokenServiceTest {
         tokenRepository.save(waitToken);
 
         // when
-        TokenResponse tokenResponse = tokenService.issueWaitToken(userId);
+        Token tokenResponse = tokenService.issueWaitToken(userId);
 
         // then
         assertThat(tokenResponse.getUuid()).isEqualTo("wait-uuid");
@@ -111,7 +111,7 @@ class TokenServiceTest {
         tokenRepository.save(expiredToken);
 
         // when
-        TokenResponse tokenResponse = tokenService.issueWaitToken(userId);
+        Token tokenResponse = tokenService.issueWaitToken(userId);
 
         // then
         assertThat(tokenResponse.getUuid()).isNotEqualTo("expired-uuid"); // 새로운 토큰
@@ -123,12 +123,12 @@ class TokenServiceTest {
     void tokenLifecycleIntegrationTest() {
         // Step 1: 새로운 사용자에게 WAIT 상태의 토큰 발급
         Long userId = 1L;
-        TokenResponse tokenResponse1 = tokenService.issueWaitToken(userId);
+        Token tokenResponse1 = tokenService.issueWaitToken(userId);
         assertThat(tokenResponse1.getStatus()).isEqualTo(TokenStatus.WAIT);
         assertThat(tokenResponse1.getExpiredAt()).isAfter(LocalDateTime.now());
 
         // Step 2: 기존 WAIT 상태의 토큰 반환
-        TokenResponse tokenResponse2 = tokenService.issueWaitToken(userId);
+        Token tokenResponse2 = tokenService.issueWaitToken(userId);
         assertThat(tokenResponse2.getUuid()).isEqualTo(tokenResponse1.getUuid());
 
         // Step 3: 기존 토큰 만료 후 새로운 WAIT 상태 토큰 발급
@@ -140,7 +140,7 @@ class TokenServiceTest {
         expiredToken.forceExpire(5); // 강제로 만료 처리
         tokenRepository.save(expiredToken);
 
-        TokenResponse tokenResponse3 = tokenService.issueWaitToken(userId);
+        Token tokenResponse3 = tokenService.issueWaitToken(userId);
         assertThat(tokenResponse3.getUuid()).isNotEqualTo(tokenResponse1.getUuid());
         assertThat(tokenResponse3.getStatus()).isEqualTo(TokenStatus.WAIT);
     }

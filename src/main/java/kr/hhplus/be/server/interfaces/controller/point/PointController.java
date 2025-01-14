@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.application.aop.ValidateToken;
+import kr.hhplus.be.server.domain.entity.point.Point;
+import kr.hhplus.be.server.domain.entity.point.PointHistory;
 import kr.hhplus.be.server.interfaces.controller.point.dto.PointHistoryRequest;
 import kr.hhplus.be.server.interfaces.controller.point.dto.PointHistoryResponse;
 import kr.hhplus.be.server.interfaces.controller.point.dto.PointRequest;
@@ -35,14 +37,14 @@ public class PointController {
     @GetMapping(value = "/{userId}")
     @ValidateToken
     public ResponseEntity<Object> getPoint(@PathVariable Long userId) {
-        PointResponse point = pointService.getPoint(userId);
+        Point point = pointService.getPoint(userId);
 
         if (point == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("해당 사용자가 보유한 포인트가 없습니다."));
 
         }
-        return ResponseEntity.ok(point);
+        return ResponseEntity.ok(PointResponse.of(point));
     }
 
     @Operation(summary = "포인트 변경 기록 조회", description = "포인트 변경 기록을 조회회한다.", tags={ "Point API" })
@@ -51,13 +53,13 @@ public class PointController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @GetMapping(value = "/history/{userId}")
     public ResponseEntity<Object> getPointHistory(@PathVariable Long userId) {
-        List<PointHistoryResponse> pointHistories = pointHistoryService.getPointHistories(userId);
+        List<PointHistory> pointHistories = pointHistoryService.getPointHistories(userId);
 
         if(pointHistories == null || pointHistories.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("해당 사용자의 포인트 히스토리는 없습니다."));
         }
-        return ResponseEntity.ok(pointHistories);
+        return ResponseEntity.ok(PointHistoryResponse.of(pointHistories));
     }
 
     @Operation(summary = "포인트 충전 요청", description = "특정 사용자의 포인트트을 충전합니다. 충전 시 포인트트 내역은 `PointHistory`에 기록됩니다.", tags={ "Point API" })
@@ -90,11 +92,11 @@ public class PointController {
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @PostMapping(value = "/history/create")
     public ResponseEntity<PointHistoryResponse> createPointHistory(@RequestBody PointHistoryRequest pointHistoryRequest) {
-        PointHistoryResponse pointHistory = pointHistoryService.processPointHistory(
+        PointHistory pointHistory = pointHistoryService.processPointHistory(
                 pointHistoryRequest.getUserId(),
                 pointHistoryRequest.getChangeAmount(),
                 pointHistoryRequest.getChangeType()
         );
-        return ResponseEntity.ok(pointHistory);
+        return ResponseEntity.ok(PointHistoryResponse.of(pointHistory));
     }
 }

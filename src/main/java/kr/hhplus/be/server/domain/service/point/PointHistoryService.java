@@ -20,13 +20,12 @@ public class PointHistoryService {
     private final PointHistoryRepository pointHistoryRepository;
 
     @Transactional(readOnly = true)
-    public List<PointHistoryResponse> getPointHistories(Long userId) {
-        List<PointHistory> pointHistories = pointHistoryRepository.findAllByUserId(userId);
-        return PointHistoryResponse.of(pointHistories);
+    public List<PointHistory> getPointHistories(Long userId) {
+        return pointHistoryRepository.findAllByUserId(userId);
     }
 
     @Transactional
-    public PointHistoryResponse processPointHistory(Long userId, int changeAmount, PointChangeType changeType) {
+    public PointHistory processPointHistory(Long userId, int changeAmount, PointChangeType changeType) {
         // 1. 현재 포인트 조회
         Point currentPoint = pointRepository.findAllByUserId(userId);
 
@@ -52,7 +51,7 @@ public class PointHistoryService {
         return pointAfterAmount;
     }
 
-    public PointHistoryResponse createPointHistory(Long userId, int changeAmount, int pointAfterAmount, PointChangeType changeType) {
+    public PointHistory createPointHistory(Long userId, int changeAmount, int pointAfterAmount, PointChangeType changeType) {
 
         // 1. 포인트 히스토리 검증 및 생성
         PointHistory pointHistory = PointHistory.createPointHistory(userId, changeAmount, pointAfterAmount, changeType);
@@ -60,12 +59,6 @@ public class PointHistoryService {
         // 2. 포인트 히스토리 저장
         pointHistoryRepository.save(pointHistory);
 
-        return PointHistoryResponse.builder()
-                .userId(pointHistory.getUserId())
-                .changeAmount(pointHistory.getChangeAmount())
-                .pointAfterAmount(pointHistory.getPointAfterAmount())
-                .changeType(pointHistory.getChangeType())
-                .createdAt(pointHistory.getCreatedAt())
-                .build();
+        return pointHistory;
     }
 }

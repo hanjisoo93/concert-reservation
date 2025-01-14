@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.application.aop.ValidateToken;
+import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.interfaces.controller.concert.seat.dto.ConcertSeatResponse;
 import kr.hhplus.be.server.domain.service.concert.seat.ConcertSeatService;
 import kr.hhplus.be.server.common.error.ErrorResponse;
@@ -31,12 +32,13 @@ public class ConcertSeatController {
     @GetMapping
     @ValidateToken
     public ResponseEntity<Object> getConcertSeats(@RequestParam("concertScheduleId") Long concertScheduleId) {
-        List<ConcertSeatResponse> concertSeats = concertSeatService.getConcertSeats(concertScheduleId);
+        List<ConcertSeat> concertSeats = concertSeatService.getConcertSeats(concertScheduleId);
         if (concertSeats == null || concertSeats.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("해당 날짜에 콘서트 좌석이 없습니다."));
         }
-        return ResponseEntity.ok(concertSeats);
+
+        return ResponseEntity.ok(ConcertSeatResponse.of(concertSeats));
     }
 
     @Operation(summary = "콘서트 좌석 상세 조회", description = "콘서트 좌석 ID를 기반으로 좌석 상세 정보를 조회합니다.", tags={ "Concert Seat API" })
@@ -46,11 +48,11 @@ public class ConcertSeatController {
     })
     @GetMapping(value = "/{concertSeatId}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Object> getConcertSeat(@PathVariable Long concertSeatId) {
-        ConcertSeatResponse concertSeatResponse = concertSeatService.getConcertSeat(concertSeatId);
-        if(concertSeatResponse == null) {
+        ConcertSeat concertSeat = concertSeatService.getConcertSeat(concertSeatId);
+        if(concertSeat == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("해당 좌석을 찾을 수 없습니다."));
         }
-        return ResponseEntity.ok(concertSeatResponse);
+        return ResponseEntity.ok(ConcertSeatResponse.of(concertSeat));
     }
 }

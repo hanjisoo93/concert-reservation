@@ -15,9 +15,8 @@ public class PointService {
     private final PointRepository pointRepository;
 
     @Transactional(readOnly = true)
-    public PointResponse getPoint(Long userId) {
-        Point point = pointRepository.findAllByUserId(userId);
-        return PointResponse.of(point);
+    public Point getPoint(Long userId) {
+        return pointRepository.findAllByUserId(userId);
     }
 
     @Transactional

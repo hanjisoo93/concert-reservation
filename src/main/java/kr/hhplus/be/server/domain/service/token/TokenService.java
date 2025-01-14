@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.service.token;
 
-import kr.hhplus.be.server.interfaces.controller.token.dto.TokenResponse;
 import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenStatus;
 import kr.hhplus.be.server.infra.repository.token.TokenRepository;
@@ -27,13 +26,12 @@ public class TokenService {
     }
 
     @Transactional(readOnly = true)
-    public TokenResponse getToken(Long userId, TokenStatus tokenStatus) {
-        Token token = tokenRepository.findAllByUserIdAndStatus(userId, tokenStatus);
-        return TokenResponse.of(token);
+    public Token getToken(Long userId, TokenStatus tokenStatus) {
+        return tokenRepository.findAllByUserIdAndStatus(userId, tokenStatus);
     }
 
     @Transactional
-    public TokenResponse issueWaitToken(Long userId) {
+    public Token issueWaitToken(Long userId) {
         // 1. 기존 토큰 조회 (락 없이 진행)
         Optional<Token> existingToken = tokenRepository.findFirstByUserIdAndStatusAndNotExpired(
                 userId,
@@ -45,7 +43,7 @@ public class TokenService {
             Token token = existingToken.get();
             if (TokenStatus.ACTIVE.equals(token.getStatus()) ||
                     (TokenStatus.WAIT.equals(token.getStatus()) && !token.isExpired())) {
-                return TokenResponse.of(token);
+                return token;
             }
         }
 
@@ -54,7 +52,7 @@ public class TokenService {
     }
 
     @Transactional
-    public TokenResponse createTokenWithLock(Long userId) {
+    public Token createTokenWithLock(Long userId) {
         synchronized (userId.toString().intern()) {
             // 1. 중복 생성 방지용 다시 조회
             Optional<Token> latestToken = tokenRepository.findFirstByUserIdAndStatusAndNotExpired(
@@ -63,13 +61,13 @@ public class TokenService {
                     LocalDateTime.now()
             );
             if (latestToken.isPresent()) {
-                return TokenResponse.of(latestToken.get());
+                return latestToken.get();
             }
 
             // 2. 새로운 토큰 생성
             Token newToken = Token.createToken(userId);
             tokenRepository.save(newToken);
-            return TokenResponse.of(newToken);
+            return newToken;
         }
     }
 }

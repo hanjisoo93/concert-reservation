@@ -13,9 +13,9 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     @Transactional
-    public PaymentResponse createPayment(Long userId, Long reservationId, int amount) {
+    public Payment createPayment(Long userId, Long reservationId, int amount) {
         Payment payment = Payment.createPayment(userId, reservationId, amount);
         paymentRepository.save(payment);
-        return PaymentResponse.of(payment);
+        return payment;
     }
 }

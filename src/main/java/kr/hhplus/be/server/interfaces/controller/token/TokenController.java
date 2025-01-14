@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.interfaces.controller.token.dto.TokenResponse;
 import kr.hhplus.be.server.common.error.ErrorResponse;
 import kr.hhplus.be.server.domain.service.token.TokenService;
@@ -27,19 +28,20 @@ public class TokenController {
             @ApiResponse(responseCode = "404", description = "유효한 토큰을 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @GetMapping(value = "/{userId}", produces = {"application/json"})
     public ResponseEntity<Object> getToken(@PathVariable Long userId) {
-        TokenResponse tokenResponse = tokenService.getToken(userId, TokenStatus.ACTIVE);
+        Token token = tokenService.getToken(userId, TokenStatus.ACTIVE);
 
-        if(tokenResponse == null) {
+        if(token == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ErrorResponse("유효한 토큰을 찾을 수 없습니다."));
         }
-        return ResponseEntity.ok(tokenResponse);
+        return ResponseEntity.ok(TokenResponse.of(token));
     }
 
     @Operation(summary = "토큰 발급", description = "", tags={ "Token API" })
     @ApiResponse(responseCode = "200", description = "정상적으로 토큰을 발급 했습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = TokenResponse.class)))
     @PostMapping("/issue")
     public TokenResponse issueToken(@RequestParam Long userId) {
-        return tokenService.issueWaitToken(userId);
+        Token token = tokenService.issueWaitToken(userId);
+        return TokenResponse.of(token);
     }
 }
