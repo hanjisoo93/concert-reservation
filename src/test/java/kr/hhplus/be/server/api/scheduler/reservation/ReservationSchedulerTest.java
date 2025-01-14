@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.api.scheduler.reservation;
 
-import kr.hhplus.be.server.interfaces.controller.scheduler.reservation.ReservationScheduler;
+import kr.hhplus.be.server.interfaces.scheduler.reservation.ReservationScheduler;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;

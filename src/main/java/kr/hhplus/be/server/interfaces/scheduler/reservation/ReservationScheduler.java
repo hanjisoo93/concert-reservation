@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.controller.scheduler.reservation;
+package kr.hhplus.be.server.interfaces.scheduler.reservation;
 
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeatStatus;

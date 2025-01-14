@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.controller.scheduler.token;
+package kr.hhplus.be.server.interfaces.scheduler.token;
 
 import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenStatus;
