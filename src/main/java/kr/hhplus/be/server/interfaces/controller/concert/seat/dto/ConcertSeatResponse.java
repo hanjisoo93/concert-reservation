@@ -26,22 +26,16 @@ public class ConcertSeatResponse {
     @Schema(required = true, description = "좌석 가격")
     private int price;
 
-    @Schema(required = true, description = "좌석 상태")
-    @NotNull
-    private ConcertSeatStatus status;
-
     @Builder
-    private ConcertSeatResponse(Long concertScheduleId, int seatNumber, int price, ConcertSeatStatus status) {
+    private ConcertSeatResponse(Long concertScheduleId, int seatNumber, int price) {
         this.concertScheduleId = concertScheduleId;
         this.seatNumber = seatNumber;
         this.price = price;
-        this.status = status;
     }
 
     public static ConcertSeatResponse of(ConcertSeat concertSeat) {
         return ConcertSeatResponse.builder()
                 .concertScheduleId(concertSeat.getConcertScheduleId())
-                .status(concertSeat.getStatus())
                 .price(concertSeat.getPrice())
                 .seatNumber(concertSeat.getSeatNumber())
                 .build();

@@ -21,22 +21,11 @@ public class ConcertSeat {
 
     private int price;
 
-    @Enumerated(EnumType.STRING)
-    private ConcertSeatStatus status;
-
     @Builder
-    private ConcertSeat(Long id, Long concertScheduleId, int seatNumber, int price, ConcertSeatStatus status) {
+    private ConcertSeat(Long id, Long concertScheduleId, int seatNumber, int price) {
         this.id = id;
         this.concertScheduleId = concertScheduleId;
         this.seatNumber = seatNumber;
         this.price = price;
-        this.status = status;
-    }
-
-    public void updateStatus(ConcertSeatStatus status) {
-        if(status == null) {
-            throw new IllegalArgumentException("유효하지 않은 좌석 상태입니다.");
-        }
-        this.status = status;
     }
 }

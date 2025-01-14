@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -21,30 +22,6 @@ class ConcertSeatRepositoryTest {
 
     @Mock
     private ConcertSeatRepository concertSeatRepository;
-
-    @DisplayName("콘서트 좌석 ID로 좌석 정보를 조회한다")
-    @Test
-    void findAllById() {
-        // given
-        ConcertSeat mockConcertSeat = ConcertSeat.builder()
-                .id((1L))
-                .concertScheduleId(1L)
-                .seatNumber(25)
-                .price(50000)
-                .status(ConcertSeatStatus.AVAILABLE)
-                .build();
-        Mockito.when(concertSeatRepository.findAllById(1L))
-                .thenReturn(mockConcertSeat);
-
-        // when
-        ConcertSeat concertSeat = concertSeatRepository.findAllById(mockConcertSeat.getId());
-
-        // then
-        Assertions.assertThat(concertSeat)
-                .isNotNull()
-                .extracting("id", "concertScheduleId", "seatNumber", "price", "status")
-                .containsExactly(mockConcertSeat.getId(), mockConcertSeat.getConcertScheduleId(), 25, 50000, ConcertSeatStatus.AVAILABLE);
-    }
 
     @DisplayName("콘서트 ID 로 좌석의 목록을 조회한다.")
     @Test
@@ -56,14 +33,12 @@ class ConcertSeatRepositoryTest {
                         .concertScheduleId(1L)
                         .seatNumber(25)
                         .price(50000)
-                        .status(ConcertSeatStatus.AVAILABLE)
                         .build(),
                 ConcertSeat.builder()
                         .id(2L)
                         .concertScheduleId(1L)
                         .seatNumber(26)
                         .price(50000)
-                        .status(ConcertSeatStatus.AVAILABLE)
                         .build()
         );
 
@@ -77,10 +52,10 @@ class ConcertSeatRepositoryTest {
         Assertions.assertThat(concertSeats)
                 .isNotNull()
                 .hasSize(2)
-                .extracting("id", "concertScheduleId", "seatNumber", "price", "status")
+                .extracting("id", "concertScheduleId", "seatNumber", "price")
                 .containsExactlyInAnyOrder(
-                        tuple(1L, 1L, 25, 50000, ConcertSeatStatus.AVAILABLE),
-                        tuple(2L, 1L, 26, 50000, ConcertSeatStatus.AVAILABLE)
+                        tuple(1L, 1L, 25, 50000),
+                        tuple(2L, 1L, 26, 50000)
                 );
     }
 

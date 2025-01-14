@@ -75,7 +75,6 @@ class PaymentFacadeTest {
                 .concertScheduleId(1L)
                 .seatNumber(1)
                 .price(10000)
-                .status(ConcertSeatStatus.AVAILABLE)
                 .build();
         ConcertSeat savedSeat = concertSeatRepository.save(seat);
 
@@ -107,10 +106,6 @@ class PaymentFacadeTest {
         // 예약 상태 확인
         Reservation updatedReservation = reservationRepository.findById(savedReservation.getId()).orElseThrow();
         assertThat(updatedReservation.getStatus()).isEqualTo(ReservationStatus.SUCCESS);
-
-        // 좌석 상태 확인
-        ConcertSeat updatedSeat = concertSeatRepository.findById(savedSeat.getId()).orElseThrow();
-        assertThat(updatedSeat.getStatus()).isEqualTo(ConcertSeatStatus.CONFIRMED);
 
         // 토큰 상태 확인
         Token updatedToken = tokenRepository.findAllByUserIdAndStatus(userId, TokenStatus.EXPIRED);
@@ -145,7 +140,6 @@ class PaymentFacadeTest {
                 .concertScheduleId(1L)
                 .seatNumber(1)
                 .price(10000)
-                .status(ConcertSeatStatus.AVAILABLE)
                 .build();
         ConcertSeat savedSeat = concertSeatRepository.save(seat);
 
@@ -187,7 +181,6 @@ class PaymentFacadeTest {
                 .concertScheduleId(1L)
                 .seatNumber(1)
                 .price(10000)
-                .status(ConcertSeatStatus.AVAILABLE)
                 .build();
         ConcertSeat savedSeat = concertSeatRepository.save(seat);
 

@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ConcertSeatRepository extends JpaRepository<ConcertSeat,Long> {
@@ -21,6 +22,4 @@ public interface ConcertSeatRepository extends JpaRepository<ConcertSeat,Long> {
     ConcertSeat findByIdForUpdate(@Param("seatId") Long seatId);
 
     List<ConcertSeat> findAllByConcertScheduleId(Long concertScheduleId);
-
-    long countByStatus(ConcertSeatStatus concertSeatStatus);
 }

@@ -54,7 +54,6 @@ public class PaymentFacade {
 
         // 4. 상태 변경
         reservation.updateStatus(ReservationStatus.SUCCESS);
-        concertSeat.updateStatus(ConcertSeatStatus.CONFIRMED);
 
         // 4. 토큰 만료 처리
         Token token = tokenRepository.findFirstByUserIdAndStatusForUpdate(reservation.getUserId(), TokenStatus.ACTIVE)

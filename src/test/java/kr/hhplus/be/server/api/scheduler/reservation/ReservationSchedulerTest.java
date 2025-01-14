@@ -2,7 +2,6 @@ package kr.hhplus.be.server.api.scheduler.reservation;
 
 import kr.hhplus.be.server.interfaces.controller.scheduler.reservation.ReservationScheduler;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
-import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeatStatus;
 import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;
 import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
@@ -55,7 +54,6 @@ class ReservationSchedulerTest {
                     .concertScheduleId(1L)
                     .seatNumber(i)
                     .price(10000)
-                    .status(ConcertSeatStatus.RESERVED)
                     .build();
             ConcertSeat savedSeat = concertSeatRepository.save(reservedSeat);
 
@@ -85,9 +83,6 @@ class ReservationSchedulerTest {
         // then
         long failedReservationCount = reservationRepository.countByStatus(ReservationStatus.FAILED);
         assertThat(failedReservationCount).isEqualTo(50); // 만료된 예약 실패 처리
-
-        long availableSeatCount = concertSeatRepository.countByStatus(ConcertSeatStatus.AVAILABLE);
-        assertThat(availableSeatCount).isEqualTo(50); // 좌석 상태 복원
 
         long expiredTokenCount = tokenRepository.countByStatus(TokenStatus.EXPIRED);
         assertThat(expiredTokenCount).isEqualTo(50); // 활성 토큰 만료 처리

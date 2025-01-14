@@ -41,7 +41,6 @@ public class ReservationScheduler {
             if(concertSeat == null) {
                 throw new IllegalArgumentException("좌석을 찾을 수 없습니다.");
             }
-            concertSeat.updateStatus(ConcertSeatStatus.AVAILABLE);
 
             // 4. 토큰 만료 처리
             Optional<Token> optionalToken = tokenRepository.findFirstByUserIdAndStatusForUpdate(reservation.getUserId(), TokenStatus.ACTIVE);
