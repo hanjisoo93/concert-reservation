@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.unit.domain.token.entity;
 
-import kr.hhplus.be.server.domain.token.entity.Token;
-import kr.hhplus.be.server.domain.token.entity.TokenStatus;
+import kr.hhplus.be.server.domain.entity.token.Token;
+import kr.hhplus.be.server.domain.entity.token.TokenStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TokenTest {
 

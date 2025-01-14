@@ -1,8 +1,7 @@
 package kr.hhplus.be.server.unit.domain.point.repository;
 
-import kr.hhplus.be.server.domain.point.entity.Point;
-import kr.hhplus.be.server.domain.point.repository.PointRepository;
-import kr.hhplus.be.server.domain.token.entity.TokenStatus;
+import kr.hhplus.be.server.domain.entity.point.Point;
+import kr.hhplus.be.server.infra.repository.point.PointRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,9 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 @ExtendWith(MockitoExtension.class)
 class PointRepositoryTest {

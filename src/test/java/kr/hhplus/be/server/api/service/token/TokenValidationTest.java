@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.api.service.token;
 
-import kr.hhplus.be.server.domain.token.entity.Token;
-import kr.hhplus.be.server.domain.token.entity.TokenStatus;
-import kr.hhplus.be.server.domain.token.repository.TokenRepository;
+import kr.hhplus.be.server.domain.service.token.TokenService;
+import kr.hhplus.be.server.domain.entity.token.Token;
+import kr.hhplus.be.server.domain.entity.token.TokenStatus;
+import kr.hhplus.be.server.infra.repository.token.TokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

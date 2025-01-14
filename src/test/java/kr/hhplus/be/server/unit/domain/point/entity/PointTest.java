@@ -1,13 +1,11 @@
 package kr.hhplus.be.server.unit.domain.point.entity;
 
-import kr.hhplus.be.server.domain.point.entity.Point;
+import kr.hhplus.be.server.domain.entity.point.Point;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PointTest {

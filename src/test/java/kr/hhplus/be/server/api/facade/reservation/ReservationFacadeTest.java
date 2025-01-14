@@ -1,14 +1,15 @@
 package kr.hhplus.be.server.api.facade.reservation;
 
-import kr.hhplus.be.server.domain.concert.seat.entity.ConcertSeat;
-import kr.hhplus.be.server.domain.concert.seat.entity.ConcertSeatStatus;
-import kr.hhplus.be.server.domain.concert.seat.repository.ConcertSeatRepository;
-import kr.hhplus.be.server.domain.reservation.entity.Reservation;
-import kr.hhplus.be.server.domain.reservation.entity.ReservationStatus;
-import kr.hhplus.be.server.domain.reservation.repository.ReservationRepository;
-import kr.hhplus.be.server.domain.token.entity.Token;
-import kr.hhplus.be.server.domain.token.entity.TokenStatus;
-import kr.hhplus.be.server.domain.token.repository.TokenRepository;
+import kr.hhplus.be.server.application.facade.reservation.ReservationFacade;
+import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
+import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeatStatus;
+import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
+import kr.hhplus.be.server.domain.entity.reservation.Reservation;
+import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
+import kr.hhplus.be.server.infra.repository.reservation.ReservationRepository;
+import kr.hhplus.be.server.domain.entity.token.Token;
+import kr.hhplus.be.server.domain.entity.token.TokenStatus;
+import kr.hhplus.be.server.infra.repository.token.TokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

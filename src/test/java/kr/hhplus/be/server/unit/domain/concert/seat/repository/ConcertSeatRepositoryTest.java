@@ -1,11 +1,8 @@
 package kr.hhplus.be.server.unit.domain.concert.seat.repository;
 
-import kr.hhplus.be.server.domain.concert.schedule.entity.ConcertSchedule;
-import kr.hhplus.be.server.domain.concert.schedule.repository.ConcertScheduleRepository;
-import kr.hhplus.be.server.domain.concert.seat.entity.ConcertSeat;
-import kr.hhplus.be.server.domain.concert.seat.entity.ConcertSeatStatus;
-import kr.hhplus.be.server.domain.concert.seat.repository.ConcertSeatRepository;
-import kr.hhplus.be.server.domain.token.entity.TokenStatus;
+import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
+import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeatStatus;
+import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 

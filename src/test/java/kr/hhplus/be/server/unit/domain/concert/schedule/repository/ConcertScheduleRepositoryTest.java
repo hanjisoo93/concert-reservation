@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.unit.domain.concert.schedule.repository;
 
-import kr.hhplus.be.server.domain.concert.schedule.entity.ConcertSchedule;
-import kr.hhplus.be.server.domain.concert.schedule.repository.ConcertScheduleRepository;
+import kr.hhplus.be.server.domain.entity.concert.schedule.ConcertSchedule;
+import kr.hhplus.be.server.infra.repository.concert.schedule.ConcertScheduleRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

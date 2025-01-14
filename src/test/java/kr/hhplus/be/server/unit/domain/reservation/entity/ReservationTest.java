@@ -1,14 +1,12 @@
 package kr.hhplus.be.server.unit.domain.reservation.entity;
 
-import kr.hhplus.be.server.domain.reservation.entity.Reservation;
-import kr.hhplus.be.server.domain.reservation.entity.ReservationStatus;
+import kr.hhplus.be.server.domain.entity.reservation.Reservation;
+import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ReservationTest {
 

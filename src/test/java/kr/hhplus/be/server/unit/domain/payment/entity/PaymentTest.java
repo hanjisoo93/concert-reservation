@@ -1,13 +1,11 @@
 package kr.hhplus.be.server.unit.domain.payment.entity;
 
-import kr.hhplus.be.server.domain.payment.entity.Payment;
+import kr.hhplus.be.server.domain.entity.payment.Payment;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentTest {

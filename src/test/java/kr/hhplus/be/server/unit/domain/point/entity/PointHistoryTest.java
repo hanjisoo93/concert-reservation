@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.unit.domain.point.entity;
 
-import kr.hhplus.be.server.domain.point.entity.PointChangeType;
-import kr.hhplus.be.server.domain.point.entity.PointHistory;
-import kr.hhplus.be.server.domain.point.repository.PointHistoryRepository;
+import kr.hhplus.be.server.domain.entity.point.PointChangeType;
+import kr.hhplus.be.server.domain.entity.point.PointHistory;
+import kr.hhplus.be.server.infra.repository.point.PointHistoryRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.DisplayName;

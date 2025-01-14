@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.unit.domain.token.repository;
 
-import kr.hhplus.be.server.domain.token.entity.Token;
-import kr.hhplus.be.server.domain.token.entity.TokenStatus;
-import kr.hhplus.be.server.domain.token.repository.TokenRepository;
+import kr.hhplus.be.server.domain.entity.token.Token;
+import kr.hhplus.be.server.domain.entity.token.TokenStatus;
+import kr.hhplus.be.server.infra.repository.token.TokenRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
