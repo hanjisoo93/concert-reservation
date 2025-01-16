@@ -110,7 +110,7 @@ class ReservationFacadeTest {
         // when & then
         assertThatThrownBy(() -> reservationFacade.reserve(userId, seatId, savedToken.getUuid()))
                 .isInstanceOf(ReservationException.class)
-                .hasMessageContaining("좌석 [" + seatId + "]은 이미 예약된 좌석입니다.");
+                .hasMessageContaining("해당 좌석은 이미 예약되었습니다.");
     }
 
     @Test
@@ -131,6 +131,6 @@ class ReservationFacadeTest {
         // when & then
         assertThatThrownBy(() -> reservationFacade.reserve(userId, invalidSeatId, savedToken.getUuid()))
                 .isInstanceOf(ConcertSeatNotFoundException.class)
-                .hasMessageContaining("존재 하는 좌석이 없습니다.");
+                .hasMessageContaining("존재하는 좌석이 없습니다.");
     }
 }

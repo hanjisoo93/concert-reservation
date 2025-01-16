@@ -61,6 +61,6 @@ class ConcertSeatServiceTest {
         // when & then
         Assertions.assertThatThrownBy(() -> concertSeatService.getConcertSeat(999L))
                 .isInstanceOf(ConcertSeatNotFoundException.class)
-                .hasMessageContaining("존재 하는 좌석이 없습니다.");
+                .hasMessageContaining("존재하는 좌석이 없습니다.");
     }
 }
