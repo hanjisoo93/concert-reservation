@@ -1,14 +1,13 @@
 package kr.hhplus.be.server.common.exception;
 
-public class BaseException extends RuntimeException{
-    private final String errorCode;
+import lombok.Getter;
 
-    public BaseException(String message, String errorCode) {
-        super(message);
+@Getter
+public abstract class BaseException extends RuntimeException{
+    private final ErrorCode errorCode;
+
+    protected BaseException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
         this.errorCode = errorCode;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
     }
 }
