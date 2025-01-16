@@ -25,4 +25,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     @Query("SELECT COUNT(r) > 0 FROM Reservation r WHERE r.seatId = :seatId AND r.status IN (:statuses)")
     boolean existsSeatReservation(@Param("seatId") Long seatId, @Param("statuses") List<ReservationStatus> statuses);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT r FROM Reservation r WHERE r.seatId = :seatId AND r.status IN (:statuses)")
+    Optional<Reservation> findReservationBySeatIdForUpdate(@Param("seatId") Long seatId, @Param("statuses") List<ReservationStatus> statuses);
 }
