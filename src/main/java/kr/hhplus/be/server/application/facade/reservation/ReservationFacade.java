@@ -27,6 +27,6 @@ public class ReservationFacade {
         reservationService.createReservation(userId, seatId);
 
         // 4. 토큰 만료 시간 연장
-        tokenService.updateTokenExpiredAt(uuid);
+        tokenService.updateTokenExpiredAt(uuid, 5);
     }
 }

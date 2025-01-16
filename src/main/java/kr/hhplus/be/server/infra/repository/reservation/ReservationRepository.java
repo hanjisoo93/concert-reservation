@@ -19,10 +19,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Optional<Reservation> findById(Long reservationId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT r FROM Reservation r WHERE r.expiredAt < :now AND r.status = :status")
-    List<Reservation> findAllByExpiredAtBeforeAndStatusWithLock(@Param("now") LocalDateTime now, @Param("status") ReservationStatus status);
+    List<Reservation> findAllByExpiredAtBeforeAndStatus(@Param("now") LocalDateTime now, @Param("status") ReservationStatus status);
 
-    long countByStatus(ReservationStatus reservationStatus);
+    int countByStatus(ReservationStatus reservationStatus);
 
     @Query("SELECT COUNT(r) > 0 FROM Reservation r WHERE r.seatId = :seatId AND r.status IN (:statuses)")
     boolean existsSeatReservation(@Param("seatId") Long seatId, @Param("statuses") List<ReservationStatus> statuses);
