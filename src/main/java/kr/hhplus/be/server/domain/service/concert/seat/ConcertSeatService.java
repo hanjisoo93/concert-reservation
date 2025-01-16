@@ -3,6 +3,7 @@ package kr.hhplus.be.server.domain.service.concert.seat;
 import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.common.exception.SystemException;
 import kr.hhplus.be.server.domain.exception.concert.seat.ConcertSeatNotFoundException;
+import kr.hhplus.be.server.interfaces.controller.concert.seat.ConcertSeatController;
 import kr.hhplus.be.server.interfaces.controller.concert.seat.dto.ConcertSeatResponse;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
@@ -29,7 +30,7 @@ public class ConcertSeatService {
     public ConcertSeat getConcertSeat(Long concertSeatId){
         try {
             return concertSeatRepository.findConcertSeatById(concertSeatId)
-                .orElseThrow(ConcertSeatNotFoundException::new);
+                .orElseThrow(() -> new ConcertSeatNotFoundException(ErrorCode.SEAT_NOT_FOUND));
         } catch (ConcertSeatNotFoundException e) {
             log.warn("좌석 조회 실패: concertSeatId={}", concertSeatId, e);
             throw e;
