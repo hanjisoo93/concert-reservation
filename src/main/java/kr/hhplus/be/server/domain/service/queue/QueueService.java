@@ -25,16 +25,7 @@ public class QueueService {
     @Transactional
     public void activateTokens() {
         try {
-            int activeCount = tokenRepository.countByStatus(TokenStatus.ACTIVE);
-            log.debug("현재 활성 토큰 수: {}", activeCount);
-
-            if (activeCount >= 100) {
-                log.info("활성화 가능한 토큰이 없음 (이미 100개 활성화)");
-                return;
-            }
-
-            int remainingCount = 100 - activeCount;
-            Pageable pageable = PageRequest.of(0, remainingCount);
+            Pageable pageable = PageRequest.of(0, 100);
             List<Token> waitingTokens = tokenRepository.findTopByTokens(TokenStatus.WAIT, pageable);
 
             if (waitingTokens.isEmpty()) {
@@ -42,10 +33,20 @@ public class QueueService {
                 return;
             }
 
-            waitingTokens.forEach(token -> token.updateStatus(TokenStatus.ACTIVE));
-            tokenRepository.saveAll(waitingTokens);
+            long currentActiveCount = tokenRepository.countByStatus(TokenStatus.ACTIVE);
+            int activatableTokensCount = 100 - (int) currentActiveCount;
 
-            log.info("토큰 활성화 완료 - 활성화된 토큰 개수: {}", waitingTokens.size());
+            if (activatableTokensCount <= 0) {
+                log.info("활성화 가능한 슬롯이 없음");
+                return;
+            }
+
+            List<Token> tokensToActivate = waitingTokens.subList(0, Math.min(activatableTokensCount, waitingTokens.size()));
+
+            tokensToActivate.forEach(token -> token.updateStatus(TokenStatus.ACTIVE));
+            tokenRepository.saveAll(tokensToActivate);
+
+            log.info("토큰 활성화 완료 - 활성화된 토큰 개수: {}", tokensToActivate.size());
 
         } catch (Exception e) {
             log.error("토큰 활성화 중 시스템 오류 발생", e);
