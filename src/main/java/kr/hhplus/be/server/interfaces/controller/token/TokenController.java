@@ -29,11 +29,6 @@ public class TokenController {
     @GetMapping(value = "/{userId}", produces = {"application/json"})
     public ResponseEntity<Object> getToken(@PathVariable Long userId) {
         Token token = tokenService.getToken(userId, TokenStatus.ACTIVE);
-
-        if(token == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ErrorResponse("유효한 토큰을 찾을 수 없습니다."));
-        }
         return ResponseEntity.ok(TokenResponse.of(token));
     }
 
