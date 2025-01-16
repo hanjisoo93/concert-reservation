@@ -11,11 +11,12 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    Reservation findAllById(Long reservationId);
+    Optional<Reservation> findById(Long reservationId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT r FROM Reservation r WHERE r.expiredAt < :now AND r.status = :status")

@@ -2,6 +2,8 @@ package kr.hhplus.be.server.unit.domain.point.entity;
 
 import kr.hhplus.be.server.domain.entity.point.PointChangeType;
 import kr.hhplus.be.server.domain.entity.point.PointHistory;
+import kr.hhplus.be.server.domain.exception.point.PointException;
+import kr.hhplus.be.server.domain.exception.point.PointHistoryException;
 import kr.hhplus.be.server.infra.repository.point.PointHistoryRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
@@ -126,7 +128,7 @@ class PointHistoryTest {
                         changeAmount,
                         currentAmount + changeAmount,
                         PointChangeType.DEPOSIT))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointHistoryException.class)
                 .hasMessage("충전할 포인트는 1 이상이어야 합니다.");
     }
 
@@ -144,7 +146,7 @@ class PointHistoryTest {
                         changeAmount,
                         currentAmount - changeAmount,
                         PointChangeType.WITHDRAWAL))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointHistoryException.class)
                 .hasMessage("사용할 포인트는 1 이상이어야 합니다.");
     }
 
@@ -163,7 +165,7 @@ class PointHistoryTest {
                         changeAmount,
                         pointAfterAmount,
                         PointChangeType.WITHDRAWAL))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointHistoryException.class)
                 .hasMessage("사용한 포인트 잔액이 부족합니다.");
     }
 

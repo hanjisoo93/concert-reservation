@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.service.payment;
 
-import kr.hhplus.be.server.interfaces.controller.payment.dto.PaymentResponse;
 import kr.hhplus.be.server.domain.entity.payment.Payment;
 import kr.hhplus.be.server.infra.repository.payment.PaymentRepository;
 import lombok.RequiredArgsConstructor;

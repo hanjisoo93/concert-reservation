@@ -20,6 +20,10 @@ public class PointHistoryRequest {
     @Min(value = 0, message = "충전/사용 포인트는 0보다 커야합니다.")
     private int changeAmount;
 
+    @Schema(required = true, description = "충전/사용 후 포인트 (양수만 허용)")
+    @Min(value = 0, message = "충전/사용 후 포인트는 0보다 커야합니다.")
+    private int pointAfterAmount;
+
     @Schema(required = true, description = "포인트 변경 타입")
     @NotBlank(message = "유효하지 않은 포인트 변경 타입입니다.")
     private PointChangeType changeType;

@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.unit.domain.point.entity;
 
 import kr.hhplus.be.server.domain.entity.point.Point;
+import kr.hhplus.be.server.domain.exception.point.PointException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +21,7 @@ class PointTest {
                 .build();
 
         // when
-        point.userPoint(50);
+        point.usePoint(50);
 
         // then
         Assertions.assertThat(point.getAmount()).isEqualTo(50);
@@ -36,7 +37,7 @@ class PointTest {
                 .build();
 
         // when & then
-        Assertions.assertThatThrownBy(() -> point.userPoint(50))
+        Assertions.assertThatThrownBy(() -> point.usePoint(50))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("포인트가 부족합니다.");
     }
@@ -51,11 +52,11 @@ class PointTest {
                 .build();
 
         // when & then
-        Assertions.assertThatThrownBy(() -> point.userPoint(0))
+        Assertions.assertThatThrownBy(() -> point.usePoint(0))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("사용할 포인트는 1 이상이어야 합니다.");
 
-        Assertions.assertThatThrownBy(() -> point.userPoint(-10))
+        Assertions.assertThatThrownBy(() -> point.usePoint(-10))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("사용할 포인트는 1 이상이어야 합니다.");
     }
@@ -87,11 +88,11 @@ class PointTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> point.addPoint(0))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointException.class)
                 .hasMessage("충전할 포인트는 1 이상이어야 합니다.");
 
         Assertions.assertThatThrownBy(() -> point.addPoint(-10))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointException.class)
                 .hasMessage("충전할 포인트는 1 이상이어야 합니다.");
     }
 }
