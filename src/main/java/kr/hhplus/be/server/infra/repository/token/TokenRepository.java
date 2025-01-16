@@ -3,6 +3,7 @@ package kr.hhplus.be.server.infra.repository.token;
 import jakarta.persistence.LockModeType;
 import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -29,6 +30,14 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Token> findAllByExpiredAtBeforeAndStatus(LocalDateTime expiredAt, TokenStatus status);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+        SELECT t FROM Token t
+        WHERE t.expiredAt < :expiredAt AND t.status IN :statuses
+    """)
+    List<Token> findAllByExpiredAtBeforeAndStatuses(@Param("expiredAt") LocalDateTime expiredAt,
+                                                    @Param("statuses") List<TokenStatus> statuses);
+
     @Lock(LockModeType.NONE)
     @Query("""
     SELECT t FROM Token t 
@@ -44,4 +53,12 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     );
 
     Optional<Token> findByUuid(String tokenUuid);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+        SELECT t FROM Token t
+        WHERE t.status = :status
+        ORDER BY t.createdAt ASC
+    """)
+    List<Token> findTopByTokens(@Param("status") TokenStatus status, Pageable pageable);
 }

@@ -18,6 +18,7 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
+    @Transactional(readOnly = true)
     public boolean isValidTokenByUuid(String tokenUuid) {
         return tokenRepository.findByUuid(tokenUuid)
                 .filter(token -> !token.isExpired()) // 만료되지 않은 토큰
@@ -51,7 +52,6 @@ public class TokenService {
         return createTokenWithLock(userId);
     }
 
-    @Transactional
     public Token createTokenWithLock(Long userId) {
         synchronized (userId.toString().intern()) {
             // 1. 중복 생성 방지용 다시 조회
