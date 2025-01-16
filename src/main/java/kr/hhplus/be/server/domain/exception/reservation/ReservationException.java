@@ -1,7 +1,10 @@
 package kr.hhplus.be.server.domain.exception.reservation;
 
-public class ReservationException extends RuntimeException{
-    public ReservationException(String message){
-        super(message);
+import kr.hhplus.be.server.common.exception.BusinessException;
+import kr.hhplus.be.server.common.exception.ErrorCode;
+
+public class ReservationException extends BusinessException {
+    public ReservationException(ErrorCode errorCode){
+        super(errorCode);
     }
 }

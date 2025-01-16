@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.entity.reservation;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.common.exception.ErrorCode;
+import kr.hhplus.be.server.domain.exception.reservation.ReservationException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,14 +51,14 @@ public class Reservation {
 
     public void updateStatus(ReservationStatus status) {
         if (status == null) {
-            throw new IllegalArgumentException("유효하지 않은 예약 상태입니다.");
+            throw new ReservationException(ErrorCode.INVALID_RESERVATION_STATUS);
         }
         this.status = status;
     }
 
     public void updateExpiredAt(LocalDateTime expiredAt) {
         if (expiredAt == null || expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("유효하지 않은 만료 시간입니다.");
+            throw new ReservationException(ErrorCode.INVALID_RESERVATION_EXPIRED_AT);
         }
         this.expiredAt = expiredAt;
     }

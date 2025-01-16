@@ -2,6 +2,7 @@ package kr.hhplus.be.server.unit.domain.reservation.entity;
 
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;
 import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
+import kr.hhplus.be.server.domain.exception.reservation.ReservationException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,7 +52,7 @@ class ReservationTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> reservation.updateStatus(null))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ReservationException.class)
                 .hasMessage("유효하지 않은 예약 상태입니다.");
     }
 
@@ -78,11 +79,11 @@ class ReservationTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> reservation.updateExpiredAt(null))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ReservationException.class)
                 .hasMessage("유효하지 않은 만료 시간입니다.");
 
         Assertions.assertThatThrownBy(() -> reservation.updateExpiredAt(invalidExpiredAt))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ReservationException.class)
                 .hasMessage("유효하지 않은 만료 시간입니다.");
     }
 }
