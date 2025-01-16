@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.unit.infra.repository.token;
 
+import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenStatus;
+import kr.hhplus.be.server.domain.exception.token.TokenException;
 import kr.hhplus.be.server.infra.repository.token.TokenRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -62,10 +64,10 @@ class TokenRepositoryTest {
         Assertions.assertThatThrownBy(() -> {
                     Token token = tokenRepository.findAllByUserIdAndStatus(userId, TokenStatus.ACTIVE);
                     if (token == null) {
-                        throw new IllegalArgumentException("유효한 토큰을 찾을 수 없습니다.");
+                        throw new TokenException(ErrorCode.TOKEN_NOT_FOUND);
                     }
                 })
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(TokenException.class)
                 .hasMessageContaining("유효한 토큰을 찾을 수 없습니다.");
 
         // Verify

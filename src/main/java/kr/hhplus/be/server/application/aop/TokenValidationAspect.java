@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.application.aop;
 
 import jakarta.servlet.http.HttpServletRequest;
+import kr.hhplus.be.server.common.exception.ErrorCode;
+import kr.hhplus.be.server.domain.exception.token.TokenException;
 import kr.hhplus.be.server.domain.service.token.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
@@ -23,7 +25,7 @@ public class TokenValidationAspect {
         String tokenUuid = request.getHeader("Authorization");
 
         if (tokenUuid == null || !tokenService.isValidTokenByUuid(tokenUuid)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            throw new TokenException(ErrorCode.TOKEN_NOT_FOUND);
         }
     }
 }

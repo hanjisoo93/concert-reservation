@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.entity.token;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.common.exception.ErrorCode;
+import kr.hhplus.be.server.domain.exception.token.TokenException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,7 +58,7 @@ public class Token {
 
     public void updateStatus(TokenStatus newStatus) {
         if (newStatus == null) {
-            throw new IllegalArgumentException("유효하지 않은 상태입니다.");
+            throw new TokenException(ErrorCode.INVALID_TOKEN_STATUS);
         }
         this.status = newStatus;
 
@@ -68,7 +70,7 @@ public class Token {
 
     public void updateExpiredAt(LocalDateTime newExpiredAt) {
         if (newExpiredAt == null || newExpiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("유효하지 않은 만료 시간입니다.");
+            throw new TokenException(ErrorCode.INVALID_TOKEN_EXPIRED_AT);
         }
         this.expiredAt = newExpiredAt;
     }
