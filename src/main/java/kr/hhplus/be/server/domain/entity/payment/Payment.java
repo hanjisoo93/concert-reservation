@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import kr.hhplus.be.server.common.exception.ErrorCode;
+import kr.hhplus.be.server.domain.exception.payment.PaymentException;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +40,7 @@ public class Payment {
 
     public static Payment createPayment(Long userId, Long reservationId, int amount){
         if(amount <= 0) {
-            throw new IllegalArgumentException("결제 금액은 0보다 커야 합니다.");
+            throw new PaymentException(ErrorCode.INVALID_PAYMENT_AMOUNT);
         }
         return Payment.builder()
                 .userId(userId)

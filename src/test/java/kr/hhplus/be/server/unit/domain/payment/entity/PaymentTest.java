@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.unit.domain.payment.entity;
 
 import kr.hhplus.be.server.domain.entity.payment.Payment;
+import kr.hhplus.be.server.domain.exception.payment.PaymentException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,11 +40,11 @@ class PaymentTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> Payment.createPayment(userId, reservationId, 0))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage("결제 금액은 0보다 커야 합니다.");
 
         Assertions.assertThatThrownBy(() -> Payment.createPayment(userId, reservationId, -100))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PaymentException.class)
                 .hasMessage("결제 금액은 0보다 커야 합니다.");
     }
 }

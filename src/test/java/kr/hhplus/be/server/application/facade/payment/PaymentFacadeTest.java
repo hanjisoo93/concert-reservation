@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.application.facade.payment;
 
+import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.domain.entity.point.Point;
 import kr.hhplus.be.server.domain.entity.point.PointChangeType;
@@ -92,12 +93,12 @@ class PaymentFacadeTest {
         // then
         // 1. 예약 상태 확인
         Reservation updatedReservation = reservationRepository.findReservationById(savedReservation.getId())
-                .orElseThrow(() -> new ReservationException("예약을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ReservationException(ErrorCode.RESERVATION_NOT_FOUND));
         assertThat(updatedReservation.getStatus()).isEqualTo(ReservationStatus.SUCCESS);
 
         // 2. 포인트 차감 확인
         Point updatedPoint = pointRepository.findById(savedPoint.getId())
-                .orElseThrow(() -> new PointException("포인트 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new PointException(ErrorCode.POINT_NOT_FOUND));
         assertThat(updatedPoint.getAmount()).isEqualTo(20000);
 
         // 3. 포인트 히스토리 확인
@@ -137,7 +138,7 @@ class PaymentFacadeTest {
         // when & then
         assertThatThrownBy(() -> paymentFacade.payment(savedReservation.getId()))
                 .isInstanceOf(PointException.class)
-                .hasMessage("포인트 잔액이 부족합니다. 충전 후 다시 시도해주세요.");
+                .hasMessage("포인트가 부족합니다.");
     }
 
     @Test
@@ -172,6 +173,6 @@ class PaymentFacadeTest {
         // when & then
         assertThatThrownBy(() -> paymentFacade.payment(999L)) // 존재하지 않는 예약 ID
                 .isInstanceOf(ReservationException.class)
-                .hasMessageContaining("존재하는 예약을 찾을 수 없습니다.");
+                .hasMessageContaining("예약 정보를 찾을 수 없습니다.");
     }
 }
