@@ -33,7 +33,7 @@ public class TokenService {
 
     @Transactional
     public Token issueWaitToken(Long userId) {
-        // 1. 기존 토큰 조회 (락 없이 진행)
+        // 1. 기존 토큰 조회
         Optional<Token> existingToken = tokenRepository.findFirstByUserIdAndStatusAndNotExpired(
                 userId,
                 Arrays.asList(TokenStatus.WAIT, TokenStatus.ACTIVE),
@@ -48,7 +48,7 @@ public class TokenService {
             }
         }
 
-        // 2. 토큰 생성 단계 (락 사용)
+        // 2. 토큰 생성 단계
         return createTokenWithLock(userId);
     }
 
@@ -60,6 +60,7 @@ public class TokenService {
                     Arrays.asList(TokenStatus.WAIT, TokenStatus.ACTIVE),
                     LocalDateTime.now()
             );
+
             if (latestToken.isPresent()) {
                 return latestToken.get();
             }

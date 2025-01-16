@@ -17,7 +17,7 @@ public class PointHistoryService {
 
     @Transactional(readOnly = true)
     public List<PointHistory> getPointHistories(Long userId) {
-        return pointHistoryRepository.findAllByUserId(userId);
+        return pointHistoryRepository.findPointHistoriesByUserId(userId);
     }
 
     @Transactional

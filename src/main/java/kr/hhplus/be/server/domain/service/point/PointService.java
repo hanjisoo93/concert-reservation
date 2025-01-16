@@ -15,20 +15,20 @@ public class PointService {
 
     @Transactional(readOnly = true)
     public Point getPoint(Long userId) {
-        return pointRepository.findByUserId(userId)
+        return pointRepository.findPointByUserId(userId)
                 .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
     }
 
     @Transactional
     public void addPoint(Long userId, int amount) {
-        Point currentPoint = pointRepository.findByUserId(userId)
+        Point currentPoint = pointRepository.findPointByUserId(userId)
                 .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
         currentPoint.addPoint(amount);
     }
 
     @Transactional
     public void usePoint(Long userId, int amount) {
-        Point currentPoint = pointRepository.findByUserId(userId)
+        Point currentPoint = pointRepository.findPointByUserId(userId)
                 .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
         currentPoint.usePoint(amount);
     }
@@ -36,7 +36,7 @@ public class PointService {
     @Transactional
     public Point processPoint(Long userId, int price) {
         // 1. 포인트 조회
-        Point point = pointRepository.findByUserId(userId)
+        Point point = pointRepository.findPointByUserId(userId)
                 .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
 
         // 2. 가격 검증

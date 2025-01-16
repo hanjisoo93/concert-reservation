@@ -23,7 +23,7 @@ public class ConcertSeatService {
 
     @Transactional(readOnly = true)
     public ConcertSeat getConcertSeat(Long concertSeatId){
-        return concertSeatRepository.findById(concertSeatId)
+        return concertSeatRepository.findConcertSeatById(concertSeatId)
                 .orElseThrow(() -> new ConcertSeatNotFoundException("존재 하는 좌석이 없습니다."));
     }
 }

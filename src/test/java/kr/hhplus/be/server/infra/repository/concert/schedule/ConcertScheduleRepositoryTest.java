@@ -1,7 +1,6 @@
-package kr.hhplus.be.server.unit.domain.concert.schedule.repository;
+package kr.hhplus.be.server.infra.repository.concert.schedule;
 
 import kr.hhplus.be.server.domain.entity.concert.schedule.ConcertSchedule;
-import kr.hhplus.be.server.infra.repository.concert.schedule.ConcertScheduleRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,8 @@ import org.springframework.data.domain.*;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ConcertScheduleRepositoryTest {

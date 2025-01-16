@@ -16,12 +16,12 @@ import java.util.Optional;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    Optional<Reservation> findById(Long reservationId);
+    int countByStatus(ReservationStatus reservationStatus);
+
+    Optional<Reservation> findReservationById(Long reservationId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Reservation> findAllByExpiredAtBeforeAndStatus(@Param("now") LocalDateTime now, @Param("status") ReservationStatus status);
-
-    int countByStatus(ReservationStatus reservationStatus);
 
     @Query("SELECT COUNT(r) > 0 FROM Reservation r WHERE r.seatId = :seatId AND r.status IN (:statuses)")
     boolean existsSeatReservation(@Param("seatId") Long seatId, @Param("statuses") List<ReservationStatus> statuses);

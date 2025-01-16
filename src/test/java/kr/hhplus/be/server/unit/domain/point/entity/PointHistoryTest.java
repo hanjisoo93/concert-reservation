@@ -44,10 +44,10 @@ class PointHistoryTest {
                         .build()
         );
 
-        Mockito.when(pointHistoryRepository.findAllByUserId(1L)).thenReturn(mockHistories);
+        Mockito.when(pointHistoryRepository.findPointHistoriesByUserId(1L)).thenReturn(mockHistories);
 
         // when
-        List<PointHistory> histories = pointHistoryRepository.findAllByUserId(1L);
+        List<PointHistory> histories = pointHistoryRepository.findPointHistoriesByUserId(1L);
 
         // then
         Assertions.assertThat(histories)
@@ -59,7 +59,7 @@ class PointHistoryTest {
                         Tuple.tuple(1L, -200, 1300, PointChangeType.WITHDRAWAL)
                 );
 
-        Mockito.verify(pointHistoryRepository, Mockito.times(1)).findAllByUserId(1L);
+        Mockito.verify(pointHistoryRepository, Mockito.times(1)).findPointHistoriesByUserId(1L);
     }
 
     @Test

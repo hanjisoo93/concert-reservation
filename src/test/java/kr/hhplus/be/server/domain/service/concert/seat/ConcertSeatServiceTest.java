@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.service.concert.seat;
 
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
-import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeatStatus;
 import kr.hhplus.be.server.domain.exception.concert.seat.ConcertSeatNotFoundException;
 import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
 import org.assertj.core.api.Assertions;
@@ -14,8 +13,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ConcertSeatServiceTest {
@@ -36,7 +33,7 @@ class ConcertSeatServiceTest {
                 .seatNumber(25)
                 .price(50000)
                 .build();
-        Mockito.when(concertSeatRepository.findById(1L))
+        Mockito.when(concertSeatRepository.findConcertSeatById(1L))
                 .thenReturn(Optional.of(mockConcertSeat));
 
         // when
@@ -58,7 +55,7 @@ class ConcertSeatServiceTest {
     @Test
     void findConcertSeatById_NotFound() {
         // given
-        Mockito.when(concertSeatRepository.findById(999L))
+        Mockito.when(concertSeatRepository.findConcertSeatById(999L))
                 .thenReturn(Optional.empty());
 
         // when & then

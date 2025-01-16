@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.application.facade.reservation;
 
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
-import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeatStatus;
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;
 import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
 import kr.hhplus.be.server.domain.entity.token.Token;
@@ -22,7 +21,6 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest

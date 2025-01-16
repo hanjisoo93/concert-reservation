@@ -33,7 +33,7 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public Reservation validReservation(Long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId)
+        Reservation reservation = reservationRepository.findReservationById(reservationId)
                 .orElseThrow(() -> new ReservationException("존재하는 예약을 찾을 수 없습니다."));
 
         if(reservation.isExpired(reservation.getExpiredAt())) {
@@ -51,7 +51,7 @@ public class ReservationService {
 
     @Transactional
     public void updateReservationStatus(Long reservationId, ReservationStatus status) {
-        Reservation reservation = reservationRepository.findById(reservationId)
+        Reservation reservation = reservationRepository.findReservationById(reservationId)
                 .orElseThrow(() -> new ReservationException("존재하는 예약을 찾을 수 없습니다."));
         reservation.updateStatus(status);
     }

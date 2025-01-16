@@ -91,7 +91,7 @@ class PaymentFacadeTest {
 
         // then
         // 1. 예약 상태 확인
-        Reservation updatedReservation = reservationRepository.findById(savedReservation.getId())
+        Reservation updatedReservation = reservationRepository.findReservationById(savedReservation.getId())
                 .orElseThrow(() -> new ReservationException("예약을 찾을 수 없습니다."));
         assertThat(updatedReservation.getStatus()).isEqualTo(ReservationStatus.SUCCESS);
 

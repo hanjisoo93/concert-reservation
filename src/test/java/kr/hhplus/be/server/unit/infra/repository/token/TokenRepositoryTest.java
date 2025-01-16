@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.unit.domain.token.repository;
+package kr.hhplus.be.server.unit.infra.repository.token;
 
 import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenStatus;
@@ -14,8 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
@@ -94,34 +92,6 @@ class TokenRepositoryTest {
     }
 
     @Test
-    @DisplayName("WAIT 상태의 오래된 토큰 상위 100개 조회")
-    void findTop100ByStatusOrderByCreatedAtAsc() {
-        // given
-        List<Token> mockTokens = IntStream.range(0, 100)
-                .mapToObj(i -> Token.builder()
-                        .uuid("uuid-" + i)
-                        .userId(1L + i)
-                        .status(TokenStatus.WAIT)
-                        .expiredAt(null)
-                        .build())
-                .collect(Collectors.toList());
-
-        Mockito.when(tokenRepository.findTop100ByStatusOrderByCreatedAtAsc(TokenStatus.WAIT))
-                .thenReturn(mockTokens);
-
-        // when
-        List<Token> tokens = tokenRepository.findTop100ByStatusOrderByCreatedAtAsc(TokenStatus.WAIT);
-
-        // then
-        assertThat(tokens).hasSize(100);
-        assertThat(tokens.get(0).getUuid()).isEqualTo("uuid-0");
-        assertThat(tokens.get(99).getUuid()).isEqualTo("uuid-99");
-
-        Mockito.verify(tokenRepository, times(1))
-                .findTop100ByStatusOrderByCreatedAtAsc(TokenStatus.WAIT);
-    }
-
-    @Test
     @DisplayName("만료된 ACTIVE 상태의 토큰 조회")
     void findAllByExpiredAtBeforeAndStatus() {
         // given
@@ -141,11 +111,11 @@ class TokenRepositoryTest {
                         .build()
         );
 
-        Mockito.when(tokenRepository.findAllByExpiredAtBeforeAndStatus(now, TokenStatus.ACTIVE))
+        Mockito.when(tokenRepository.findAllByExpiredAtBeforeAndStatuses(now, List.of(TokenStatus.ACTIVE)))
                 .thenReturn(mockTokens);
 
         // when
-        List<Token> expiredTokens = tokenRepository.findAllByExpiredAtBeforeAndStatus(now, TokenStatus.ACTIVE);
+        List<Token> expiredTokens = tokenRepository.findAllByExpiredAtBeforeAndStatuses(now, List.of(TokenStatus.ACTIVE));
 
         // then
         assertThat(expiredTokens).hasSize(2);
@@ -153,7 +123,7 @@ class TokenRepositoryTest {
         assertThat(expiredTokens.get(1).getUuid()).isEqualTo("expired-token-2");
 
         Mockito.verify(tokenRepository, times(1))
-                .findAllByExpiredAtBeforeAndStatus(now, TokenStatus.ACTIVE);
+                .findAllByExpiredAtBeforeAndStatuses(now, List.of(TokenStatus.ACTIVE));
     }
 
     @Test
@@ -168,18 +138,18 @@ class TokenRepositoryTest {
                 .expiredAt(now.plusMinutes(10)) // 10분 후 만료
                 .build();
 
-        Mockito.when(tokenRepository.findAllByExpiredAtBeforeAndStatus(now.plusMinutes(11), TokenStatus.WAIT))
+        Mockito.when(tokenRepository.findAllByExpiredAtBeforeAndStatuses(now.plusMinutes(11), List.of(TokenStatus.WAIT)))
                 .thenReturn(List.of(waitToken));
 
         // when
-        List<Token> expiredTokens = tokenRepository.findAllByExpiredAtBeforeAndStatus(now.plusMinutes(11), TokenStatus.WAIT);
+        List<Token> expiredTokens = tokenRepository.findAllByExpiredAtBeforeAndStatuses(now.plusMinutes(11), List.of(TokenStatus.WAIT));
 
         // then
         assertThat(expiredTokens).hasSize(1);
         assertThat(expiredTokens.get(0).getUuid()).isEqualTo("wait-uuid");
 
         Mockito.verify(tokenRepository, times(1))
-                .findAllByExpiredAtBeforeAndStatus(now.plusMinutes(11), TokenStatus.WAIT);
+                .findAllByExpiredAtBeforeAndStatuses(now.plusMinutes(11), List.of(TokenStatus.WAIT));
     }
 
     @Test

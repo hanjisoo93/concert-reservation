@@ -16,19 +16,12 @@ import java.util.Optional;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Long> {
-    Token findAllByUserIdAndStatus(Long userId, TokenStatus status);
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT t FROM Token t WHERE t.userId = :userId and t.status = :status ORDER BY t.createdAt DESC")
-    Optional<Token> findLatestActiveTokenByUserId(@Param("userId") Long userId, @Param("status") TokenStatus status);
 
     int countByStatus(TokenStatus status);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<Token> findTop100ByStatusOrderByCreatedAtAsc(TokenStatus status);
+    Optional<Token> findByUuid(String tokenUuid);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<Token> findAllByExpiredAtBeforeAndStatus(LocalDateTime expiredAt, TokenStatus status);
+    Token findAllByUserIdAndStatus(Long userId, TokenStatus status);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""
@@ -38,21 +31,18 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     List<Token> findAllByExpiredAtBeforeAndStatuses(@Param("expiredAt") LocalDateTime expiredAt,
                                                     @Param("statuses") List<TokenStatus> statuses);
 
-    @Lock(LockModeType.NONE)
     @Query("""
-    SELECT t FROM Token t 
-    WHERE t.userId = :userId 
-      AND t.status IN :statuses 
-      AND t.expiredAt > :now
-    ORDER BY t.createdAt DESC
+        SELECT t FROM Token t 
+        WHERE t.userId = :userId 
+          AND t.status IN :statuses 
+          AND t.expiredAt > :now
+        ORDER BY t.createdAt DESC
     """)
     Optional<Token> findFirstByUserIdAndStatusAndNotExpired(
             @Param("userId") Long userId,
             @Param("statuses") List<TokenStatus> statuses,
             @Param("now") LocalDateTime now
     );
-
-    Optional<Token> findByUuid(String tokenUuid);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""

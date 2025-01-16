@@ -3,7 +3,6 @@ package kr.hhplus.be.server.interfaces.controller.concert.seat.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
-import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeatStatus;
 import lombok.Builder;
 import lombok.Getter;
 

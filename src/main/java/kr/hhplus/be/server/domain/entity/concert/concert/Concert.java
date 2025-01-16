@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.entity.concert.schedule;
+package kr.hhplus.be.server.domain.entity.concert.concert;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,24 +9,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class ConcertSchedule {
+public class Concert {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long concertId;
-
-    private LocalDate concertDate;
-
     @Builder
-    private ConcertSchedule(Long concertId, LocalDate concertDate) {
-        this.concertId = concertId;
-        this.concertDate = concertDate;
+    private Concert(Long id) {
+        this.id = id;
     }
 }

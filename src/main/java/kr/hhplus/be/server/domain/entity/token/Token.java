@@ -73,11 +73,6 @@ public class Token {
         this.expiredAt = newExpiredAt;
     }
 
-    // (테스트) 강제 만료 처리
-    public void forceExpire(int minusMinutes) {
-        this.expiredAt = LocalDateTime.now().minusMinutes(minusMinutes);
-    }
-
     private static String generateUuid() {
         return java.util.UUID.randomUUID().toString();
     }
@@ -85,5 +80,10 @@ public class Token {
     // 토큰 유효성 확인
     public boolean isExpired() {
         return this.expiredAt.isBefore(LocalDateTime.now());
+    }
+
+    // (테스트) 강제 만료 처리
+    public void forceExpire(int minusMinutes) {
+        this.expiredAt = LocalDateTime.now().minusMinutes(minusMinutes);
     }
 }
