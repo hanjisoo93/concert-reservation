@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.entity.point;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.exception.point.PointException;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,11 +34,11 @@ public class Point {
     // 포인트 사용
     public void usePoint(int amount){
         if(isAmountLessThan(amount)) {
-            throw new IllegalArgumentException("포인트가 부족합니다.");
+            throw new PointException(ErrorCode.INSUFFICIENT_POINT);
         }
 
         if(amount <= 0) {
-            throw new IllegalArgumentException("사용할 포인트는 1 이상이어야 합니다.");
+            throw new PointException(ErrorCode.INVALID_POINT_USAGE);
         }
         this.amount -= amount;
     }
@@ -45,7 +46,7 @@ public class Point {
     // 포인트 충전
     public void addPoint(int amount) {
         if(amount <= 0) {
-            throw new PointException("충전할 포인트는 1 이상이어야 합니다.");
+            throw new PointException(ErrorCode.INVALID_POINT_CHARGE);
         }
         this.amount += amount;
     }

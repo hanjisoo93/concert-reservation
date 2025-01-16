@@ -1,7 +1,10 @@
 package kr.hhplus.be.server.domain.exception.point;
 
-public class PointHistoryException extends RuntimeException{
-    public PointHistoryException(String message) {
-        super(message);
+import kr.hhplus.be.server.common.exception.BusinessException;
+import kr.hhplus.be.server.common.exception.ErrorCode;
+
+public class PointHistoryException extends BusinessException {
+    public PointHistoryException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

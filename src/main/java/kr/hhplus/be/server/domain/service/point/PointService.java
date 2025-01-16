@@ -1,12 +1,16 @@
 package kr.hhplus.be.server.domain.service.point;
 
+import kr.hhplus.be.server.common.exception.ErrorCode;
+import kr.hhplus.be.server.common.exception.SystemException;
 import kr.hhplus.be.server.domain.exception.point.PointException;
 import kr.hhplus.be.server.domain.entity.point.Point;
 import kr.hhplus.be.server.infra.repository.point.PointRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class PointService {
@@ -15,39 +19,80 @@ public class PointService {
 
     @Transactional(readOnly = true)
     public Point getPoint(Long userId) {
-        return pointRepository.findPointByUserId(userId)
-                .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
+        try {
+            return pointRepository.findPointByUserId(userId)
+                    .orElseThrow(() -> new PointException(ErrorCode.POINT_NOT_FOUND));
+        } catch (PointException e) {
+            log.info("포인트 조회 실패 - userId={}", userId);
+            throw e;
+        } catch (Exception e) {
+            log.error("포인트 조회 중 시스템 오류 발생 - userId={}", userId, e);
+            throw new SystemException(ErrorCode.SYSTEM_ERROR);
+        }
     }
 
     @Transactional
     public void addPoint(Long userId, int amount) {
-        Point currentPoint = pointRepository.findPointByUserId(userId)
-                .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
-        currentPoint.addPoint(amount);
+        try {
+            Point currentPoint = pointRepository.findPointByUserId(userId)
+                    .orElseThrow(() -> new PointException(ErrorCode.POINT_NOT_FOUND));
+            currentPoint.addPoint(amount);
+            log.info("포인트 추가 - userId={}, addedAmount={}, totalAmount={}",
+                    userId, amount, currentPoint.getAmount());
+        } catch (PointException e) {
+            log.warn("포인트 추가 실패 - userId={}, amount={}", userId, amount, e);
+            throw e;
+        } catch (Exception e) {
+            log.error("포인트 추가 중 시스템 오류 발생 - userId={}, amount={}", userId, amount, e);
+            throw new SystemException(ErrorCode.SYSTEM_ERROR);
+        }
     }
 
     @Transactional
     public void usePoint(Long userId, int amount) {
-        Point currentPoint = pointRepository.findPointByUserId(userId)
-                .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
-        currentPoint.usePoint(amount);
+        try {
+            Point currentPoint = pointRepository.findPointByUserId(userId)
+                    .orElseThrow(() -> new PointException(ErrorCode.POINT_NOT_FOUND));
+            currentPoint.usePoint(amount);
+            log.info("포인트 사용 - userId={}, usedAmount={}, remainingAmount={}",
+                    userId, amount, currentPoint.getAmount());
+        } catch (PointException e) {
+            log.warn("포인트 사용 실패 - userId={}, amount={}", userId, amount, e);
+            throw e;
+        } catch (Exception e) {
+            log.error("포인트 사용 중 시스템 오류 발생 - userId={}, amount={}", userId, amount, e);
+            throw new SystemException(ErrorCode.SYSTEM_ERROR);
+        }
     }
 
     @Transactional
     public Point processPoint(Long userId, int price) {
-        // 1. 포인트 조회
-        Point point = pointRepository.findPointByUserId(userId)
-                .orElseThrow(() -> new PointException("포인트 정보가 존재하지 않습니다."));
+        try {
+            // 1. 포인트 조회
+            Point point = pointRepository.findPointByUserId(userId)
+                    .orElseThrow(() -> new PointException(ErrorCode.POINT_NOT_FOUND));
 
-        // 2. 가격 검증
-        if(point.isAmountLessThan(price)){
-            throw new PointException("포인트 잔액이 부족합니다. 충전 후 다시 시도해주세요.");
+            // 2. 가격 검증
+            if (point.isAmountLessThan(price)) {
+                log.warn("포인트 잔액 부족 - userId={}, currentAmount={}, requiredAmount={}",
+                        userId, point.getAmount(), price);
+                throw new PointException(ErrorCode.INSUFFICIENT_POINT);
+            }
+
+            // 3. 포인트 차감
+            point.usePoint(price);
+            pointRepository.save(point);
+
+            log.info("포인트 차감 완료 - userId={}, deductedAmount={}, remainingAmount={}",
+                    userId, price, point.getAmount());
+
+            return point;
+        } catch (PointException e) {
+            log.warn("포인트 처리 실패 - userId={}, price={}", userId, price, e);
+            throw e;
+        } catch (Exception e) {
+            log.error("포인트 처리 중 시스템 오류 발생 - userId={}, price={}", userId, price, e);
+            throw new SystemException(ErrorCode.SYSTEM_ERROR);
         }
-
-        // 3. 포인트 차감
-        point.usePoint(price);
-        pointRepository.save(point);
-
-        return point;
     }
 }

@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.entity.point;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.exception.point.PointHistoryException;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,17 +42,17 @@ public class PointHistory {
     public static PointHistory createPointHistory(Long userId, int changeAmount, int pointAfterAmount, PointChangeType changeType) {
         if(PointChangeType.DEPOSIT.equals(changeType)) {
             if (changeAmount <= 0) {
-                throw new PointHistoryException("충전할 포인트는 1 이상이어야 합니다.");
+                throw new PointHistoryException(ErrorCode.INVALID_POINT_CHARGE);
             }
         }
 
         if(PointChangeType.WITHDRAWAL.equals(changeType)) {
             if(changeAmount <= 0) {
-                throw new PointHistoryException("사용할 포인트는 1 이상이어야 합니다.");
+                throw new PointHistoryException(ErrorCode.INVALID_POINT_USAGE);
             }
 
             if(pointAfterAmount < 0) {
-                throw new PointHistoryException("사용한 포인트 잔액이 부족합니다.");
+                throw new PointHistoryException(ErrorCode.INSUFFICIENT_POINT);
             }
         }
 

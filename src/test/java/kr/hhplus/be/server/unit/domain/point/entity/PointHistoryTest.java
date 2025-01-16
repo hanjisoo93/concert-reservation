@@ -166,7 +166,7 @@ class PointHistoryTest {
                         pointAfterAmount,
                         PointChangeType.WITHDRAWAL))
                 .isInstanceOf(PointHistoryException.class)
-                .hasMessage("사용한 포인트 잔액이 부족합니다.");
+                .hasMessage("포인트가 부족합니다.");
     }
 
 }

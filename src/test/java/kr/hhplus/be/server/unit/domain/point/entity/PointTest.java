@@ -38,7 +38,7 @@ class PointTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> point.usePoint(50))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointException.class)
                 .hasMessage("포인트가 부족합니다.");
     }
 
@@ -53,11 +53,11 @@ class PointTest {
 
         // when & then
         Assertions.assertThatThrownBy(() -> point.usePoint(0))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointException.class)
                 .hasMessage("사용할 포인트는 1 이상이어야 합니다.");
 
         Assertions.assertThatThrownBy(() -> point.usePoint(-10))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(PointException.class)
                 .hasMessage("사용할 포인트는 1 이상이어야 합니다.");
     }
 
