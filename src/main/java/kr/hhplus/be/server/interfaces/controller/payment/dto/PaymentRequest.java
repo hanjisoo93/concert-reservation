@@ -21,4 +21,11 @@ public class PaymentRequest {
     @Schema(required = true, description = "결제 금액")
     @NotNull
     private int amount;
+
+    @Builder
+    public PaymentRequest(Long userId, Long reservationId, int amount) {
+        this.userId = userId;
+        this.reservationId = reservationId;
+        this.amount = amount;
+    }
 }

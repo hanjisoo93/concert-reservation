@@ -31,7 +31,8 @@ public class Payment {
     private LocalDateTime createdAt;
 
     @Builder
-    private Payment(Long userId, Long reservationId, int amount, LocalDateTime createdAt) {
+    private Payment(Long id, Long userId, Long reservationId, int amount, LocalDateTime createdAt) {
+        this.id = id;
         this.userId = userId;
         this.reservationId = reservationId;
         this.amount = amount;
