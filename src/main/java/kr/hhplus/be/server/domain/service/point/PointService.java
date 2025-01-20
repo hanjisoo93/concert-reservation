@@ -51,7 +51,7 @@ public class PointService {
     @Transactional
     public void usePoint(Long userId, int amount) {
         try {
-            Point currentPoint = pointRepository.findPointByUserId(userId)
+            Point currentPoint = pointRepository.findPointForUpdateByUserId(userId)
                     .orElseThrow(() -> new PointException(ErrorCode.POINT_NOT_FOUND));
             currentPoint.usePoint(amount);
             log.info("포인트 사용 - userId={}, usedAmount={}, remainingAmount={}",
@@ -69,7 +69,7 @@ public class PointService {
     public Point processPoint(Long userId, int price) {
         try {
             // 1. 포인트 조회
-            Point point = pointRepository.findPointByUserId(userId)
+            Point point = pointRepository.findPointForUpdateByUserId(userId)
                     .orElseThrow(() -> new PointException(ErrorCode.POINT_NOT_FOUND));
 
             // 2. 가격 검증
@@ -81,8 +81,6 @@ public class PointService {
 
             // 3. 포인트 차감
             point.usePoint(price);
-            pointRepository.save(point);
-
             log.info("포인트 차감 완료 - userId={}, deductedAmount={}, remainingAmount={}",
                     userId, price, point.getAmount());
 

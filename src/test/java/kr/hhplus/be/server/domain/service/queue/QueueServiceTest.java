@@ -12,6 +12,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -82,6 +85,71 @@ class QueueServiceTest {
 
         int validTokens = tokenRepository.countByStatus(TokenStatus.ACTIVE);
         assertThat(validTokens).isEqualTo(10); // 여전히 유효한 ACTIVE 토큰
+    }
+
+    @Test
+    @DisplayName("동시에 여러 개의 토큰 활성화 요청이 발생해도 최대 100개까지만 활성화된다")
+    void activateTokens_concurrentRequests_shouldNotExceedLimit() throws InterruptedException {
+        // given
+        IntStream.range(0, 150).forEach(i -> {
+            tokenRepository.save(Token.createToken((long) i));
+        });
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        CountDownLatch latch = new CountDownLatch(10);
+
+        // when
+        for (int i = 0; i < 10; i++) {
+            executorService.execute(() -> {
+                try {
+                    queueService.activateTokens();
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+        executorService.shutdown();
+
+        // then
+        long activeTokenCount = tokenRepository.countByStatus(TokenStatus.ACTIVE);
+        assertThat(activeTokenCount).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("동시에 여러 개의 토큰 만료 요청이 발생해도 동일한 토큰이 중복 만료되지 않는다")
+    void expireTokens_concurrentRequests_shouldHandleProperly() throws InterruptedException {
+        // given
+        LocalDateTime expiredTime = LocalDateTime.now().minusMinutes(1);
+        IntStream.range(0, 50).forEach(i -> {
+            Token token = Token.createToken((long) i);
+            token.expireToken();
+            tokenRepository.save(token);
+        });
+
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        CountDownLatch latch = new CountDownLatch(3);
+
+        // when: 동시에 3개의 만료 요청을 실행
+        for (int i = 0; i < 3; i++) {
+            executorService.execute(() -> {
+                try {
+                    queueService.expireTokens();
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+        executorService.shutdown();
+
+        // then
+        long activeTokenCount = tokenRepository.countByStatus(TokenStatus.ACTIVE);
+        System.out.println("만료 처리 후 활성화된 토큰 개수: " + activeTokenCount);
+
+        assertThat(activeTokenCount).isEqualTo(0); // 모든 활성화된 토큰이 만료되었는지 검증
     }
 
     // Helper 메서드: 특정 상태의 토큰 생성

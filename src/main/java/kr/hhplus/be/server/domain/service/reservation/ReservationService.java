@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,12 +65,37 @@ public class ReservationService {
         }
     }
 
+//    @Transactional
+//    public void createReservation(Long userId, Long seatId) {
+//        try {
+//            Reservation reservation = Reservation.createReservation(userId, seatId);
+//            reservationRepository.save(reservation);
+//            log.info("예약 생성 완료 - reservationId={}, userId={}, seatId={}", reservation.getId(), userId, seatId);
+//        } catch (Exception e) {
+//            log.error("예약 생성 중 시스템 오류 발생 - userId={}, seatId={}", userId, seatId, e);
+//            throw new SystemException(ErrorCode.SYSTEM_ERROR);
+//        }
+//    }
+
     @Transactional
     public void createReservation(Long userId, Long seatId) {
         try {
+            List<ReservationStatus> activeStatuses = List.of(ReservationStatus.PENDING, ReservationStatus.SUCCESS);
+
+            // 1. 좌석 예약 여부 조회
+            Optional<Reservation> existingReservation = reservationRepository.findReservationBySeatIdForUpdate(seatId, activeStatuses);
+
+            if (existingReservation.isPresent()) {
+                log.warn("좌석 예약 실패 - 다른 트랜잭션에서 이미 예약됨: seatId={}", seatId);
+                throw new ReservationException(ErrorCode.SEAT_ALREADY_RESERVED);
+            }
+
+            // 2. 예약 생성
             Reservation reservation = Reservation.createReservation(userId, seatId);
             reservationRepository.save(reservation);
+
             log.info("예약 생성 완료 - reservationId={}, userId={}, seatId={}", reservation.getId(), userId, seatId);
+
         } catch (Exception e) {
             log.error("예약 생성 중 시스템 오류 발생 - userId={}, seatId={}", userId, seatId, e);
             throw new SystemException(ErrorCode.SYSTEM_ERROR);
