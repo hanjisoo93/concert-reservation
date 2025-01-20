@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.service.point;
 
 import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.common.exception.SystemException;
+import kr.hhplus.be.server.domain.entity.point.PointChangeType;
 import kr.hhplus.be.server.domain.exception.point.PointException;
 import kr.hhplus.be.server.domain.entity.point.Point;
 import kr.hhplus.be.server.infra.repository.point.PointRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PointService {
 
     private final PointRepository pointRepository;
+    private final PointHistoryService pointHistoryService;
 
     @Transactional(readOnly = true)
     public Point getPoint(Long userId) {
@@ -66,7 +68,7 @@ public class PointService {
     }
 
     @Transactional
-    public Point processPoint(Long userId, int price) {
+    public void charge(Long userId, int price) {
         try {
             // 1. 포인트 조회
             Point point = pointRepository.findPointForUpdateByUserId(userId)
@@ -84,7 +86,9 @@ public class PointService {
             log.info("포인트 차감 완료 - userId={}, deductedAmount={}, remainingAmount={}",
                     userId, price, point.getAmount());
 
-            return point;
+            // 4. 포인트 히스토리 저장
+            pointHistoryService.createPointHistory(userId, price, point.getAmount(), PointChangeType.WITHDRAWAL);
+
         } catch (PointException e) {
             log.warn("포인트 처리 실패 - userId={}, price={}", userId, price, e);
             throw e;

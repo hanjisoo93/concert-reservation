@@ -3,7 +3,6 @@ package kr.hhplus.be.server.application.facade.payment;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.domain.entity.point.Point;
 import kr.hhplus.be.server.domain.entity.point.PointChangeType;
-import kr.hhplus.be.server.domain.entity.point.PointHistory;
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;
 import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
 import kr.hhplus.be.server.domain.service.concert.seat.ConcertSeatService;
@@ -34,20 +33,12 @@ public class PaymentFacade {
         ConcertSeat concertSeat = concertSeatService.getConcertSeat(reservation.getSeatId());
 
         // 3. 포인트 처리
-        processPoint(reservation.getUserId(), concertSeat.getPrice());
+        pointService.charge(reservation.getUserId(), concertSeat.getPrice());
 
         // 4. 결제 등록
         paymentService.createPayment(reservation.getUserId(), reservationId, concertSeat.getPrice());
 
         // 5. 예약 상태 변경
         reservationService.updateReservationStatus(reservationId, ReservationStatus.SUCCESS);
-    }
-
-    private void processPoint(Long userId, int price) {
-        // 1. 포인트 처리
-        Point point = pointService.processPoint(userId, price);
-
-        // 2. 포인트 히스토리 저장
-        pointHistoryService.createPointHistory(userId, price, point.getAmount(), PointChangeType.WITHDRAWAL);
     }
 }

@@ -16,7 +16,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -58,7 +57,7 @@ class PointServiceTest {
         for (int i = 0; i < numThreads; i++) {
             executorService.execute(() -> {
                 try {
-                    pointService.processPoint(testUserId, deductionAmount);
+                    pointService.charge(testUserId, deductionAmount);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failureCount.incrementAndGet();
@@ -102,7 +101,7 @@ class PointServiceTest {
         for (int i = 0; i < numThreads; i++) {
             executorService.execute(() -> {
                 try {
-                    pointService.processPoint(testUserId, deductionAmount);
+                    pointService.charge(testUserId, deductionAmount);
                 } catch (PointException e) {
                     failureCount.incrementAndGet(); // 예외 발생 횟수 기록
                 } finally {
