@@ -41,4 +41,22 @@ public class PaymentFacade {
         // 5. 예약 상태 변경
         reservationService.updateReservationStatus(reservationId, ReservationStatus.SUCCESS);
     }
+
+    @Transactional
+    public void paymentWithRedissonLock(Long reservationId) {
+        // 1. 예약 확인
+        Reservation reservation = reservationService.validReservation(reservationId);
+
+        // 2. 좌석 확인
+        ConcertSeat concertSeat = concertSeatService.getConcertSeat(reservation.getSeatId());
+
+        // 3. 포인트 처리
+        pointService.spendPointWithRedissonLock(reservation.getUserId(), concertSeat.getPrice());
+
+        // 4. 결제 등록
+        paymentService.createPayment(reservation.getUserId(), reservationId, concertSeat.getPrice());
+
+        // 5. 예약 상태 변경
+        reservationService.updateReservationStatus(reservationId, ReservationStatus.SUCCESS);
+    }
 }
