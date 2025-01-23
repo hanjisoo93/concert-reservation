@@ -35,6 +35,15 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("org.springframework.retry:spring-retry")
+
+	// Redis
+	implementation("org.apache.commons:commons-pool2:2.11.1")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis:3.1.5")
+	implementation("org.springframework.boot:spring-boot-starter-cache:3.1.2")
+
+	// Redis - Redisson
+	implementation("org.redisson:redisson-spring-boot-starter:3.18.0")
 
 	// Swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")

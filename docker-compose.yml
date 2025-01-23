@@ -11,6 +11,14 @@ services:
       - MYSQL_DATABASE=hhplus
     volumes:
       - ./data/mysql/:/var/lib/mysql
+  redis:
+    image: redis:latest
+    container_name: redis_test
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data/redis/:/data
 
 networks:
   default:

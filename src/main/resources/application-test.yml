@@ -31,3 +31,16 @@ spring:
     generate-ddl: true
     open-in-view: false
     show-sql: true
+
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      timeout: 6000ms
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 10
+          max-idle: 5
+          min-idle: 1
+          max-wait: 2000ms
