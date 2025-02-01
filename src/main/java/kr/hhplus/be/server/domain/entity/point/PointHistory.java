@@ -40,6 +40,22 @@ public class PointHistory {
     }
 
     public static PointHistory createPointHistory(Long userId, int changeAmount, int pointAfterAmount, PointChangeType changeType) {
+        if(PointChangeType.DEPOSIT.equals(changeType)) {
+            if (changeAmount <= 0) {
+                throw new PointHistoryException(ErrorCode.INVALID_POINT_CHARGE);
+            }
+        }
+
+        if(PointChangeType.WITHDRAWAL.equals(changeType)) {
+            if(changeAmount <= 0) {
+                throw new PointHistoryException(ErrorCode.INVALID_POINT_USAGE);
+            }
+
+            if(pointAfterAmount < 0) {
+                throw new PointHistoryException(ErrorCode.INSUFFICIENT_POINT);
+            }
+        }
+
         return PointHistory.builder()
                 .userId(userId)
                 .changeAmount(changeAmount)

@@ -33,9 +33,10 @@ public class PointHistoryService {
             // 2. 포인트 히스토리 저장
             pointHistoryRepository.save(pointHistory);
 
-            log.info("포인트 히스토리 완료 - userId={}, changeAmount={}, pointAfterAmount={}, changeType={}", userId, changeAmount, pointAfterAmount, changeType);
+            log.info("포인트 변경 완료 - userId={}, changeAmount={}, pointAfterAmount={}, changeType={}",
+                    userId, changeAmount, pointAfterAmount, changeType);
         } catch (Exception e) {
-            log.error("포인트 히스토리 실패 - userId={}, changeAmount={}, changeType={}", userId, changeAmount, changeType, e);
+            log.error("포인트 변경 실패 - userId={}, changeAmount={}, changeType={}", userId, changeAmount, changeType, e);
             throw new SystemException(ErrorCode.SYSTEM_ERROR);
         }
     }

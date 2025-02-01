@@ -53,6 +53,7 @@ class PaymentFacadeTest {
 
     @BeforeEach
     void tearDown() {
+        // 데이터 초기화
         reservationRepository.deleteAllInBatch();
         concertSeatRepository.deleteAllInBatch();
         pointRepository.deleteAllInBatch();

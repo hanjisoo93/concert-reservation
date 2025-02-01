@@ -17,16 +17,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(tokenValidationInterceptor)
-                .addPathPatterns("/api/**") // 모든 API에 대기열 검증 적용
-                .excludePathPatterns("/swagger-ui.html")
-                .excludePathPatterns("/api/tokens/**")
-                // K6 테스트 용
-                .excludePathPatterns("/reservation/optimistic")
-                .excludePathPatterns("/reservation/pessimistic")
-                .excludePathPatterns("/reservation/distributed")
-                .excludePathPatterns("/point/optimistic")
-                .excludePathPatterns("/point/pessimistic")
-                .excludePathPatterns("/point/distributed");
+                .addPathPatterns("/**") // 모든 API에 대기열 검증 적용
+                .excludePathPatterns("/api/tokens/**");
     }
-
 }

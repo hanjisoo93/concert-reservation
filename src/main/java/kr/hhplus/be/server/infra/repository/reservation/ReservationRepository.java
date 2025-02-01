@@ -2,7 +2,6 @@ package kr.hhplus.be.server.infra.repository.reservation;
 
 import jakarta.persistence.LockModeType;
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;
-import kr.hhplus.be.server.domain.entity.reservation.ReservationOptimistic;
 import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -30,7 +29,4 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT r FROM Reservation r WHERE r.seatId = :seatId AND r.status IN (:statuses)")
     Optional<Reservation> findReservationBySeatIdForUpdate(@Param("seatId") Long seatId, @Param("statuses") List<ReservationStatus> statuses);
-
-    @Query("SELECT r FROM Reservation r WHERE r.seatId = :seatId AND r.status IN (:statuses)")
-    Optional<Reservation> findReservation(@Param("seatId") Long seatId, @Param("statuses") List<ReservationStatus> statuses);
 }
