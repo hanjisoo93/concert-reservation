@@ -24,6 +24,7 @@ public enum ErrorCode {
     // 예약
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "예약 정보를 찾을 수 없습니다."),
     RESERVATION_EXPIRED(HttpStatus.BAD_REQUEST, "예약 요청 가능한 시간이 만료되었습니다."),
+    RESERVATION_ALREADY_PAID(HttpStatus.BAD_REQUEST, "이미 결제가 완료된 예약입니다."),
     INVALID_RESERVATION_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 예약 상태입니다."),
     INVALID_RESERVATION_EXPIRED_AT(HttpStatus.BAD_REQUEST, "유효하지 않은 만료 시간입니다."),
 

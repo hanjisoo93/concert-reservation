@@ -29,4 +29,19 @@ public class ReservationFacade {
         // 4. 토큰 만료 시간 연장
         tokenService.updateTokenExpiredAt(uuid, 5);
     }
+
+    @Transactional
+    public void reserveWithOptimisticLock(Long userId, Long seatId, String uuid) {
+        // 1. 좌석 확인
+        concertSeatService.getConcertSeat(seatId);
+
+        // 2. 좌석 예약 가능 여부 확인
+        reservationService.validateSeatReservation(seatId);
+
+        // 3. 예약 하기
+        reservationService.createReservationWithOptimisticLock(userId, seatId);
+
+        // 4. 토큰 만료 시간 연장
+        tokenService.updateTokenExpiredAt(uuid, 5);
+    }
 }
