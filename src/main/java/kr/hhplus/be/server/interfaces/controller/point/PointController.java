@@ -53,8 +53,8 @@ public class PointController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청입니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @PostMapping(value = "/add")
-    public ResponseEntity<String> creditPoint(@RequestBody PointRequest pointRequest) {
-        pointService.creditPoint(pointRequest.getUserId(), pointRequest.getAmount());
+    public ResponseEntity<String> addPoint(@RequestBody PointRequest pointRequest) {
+        pointService.addPoint(pointRequest.getUserId(), pointRequest.getAmount());
         return ResponseEntity.ok("포인트 충전이 완료되었습니다.");
     }
 
@@ -65,8 +65,8 @@ public class PointController {
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "409", description = "포인트가 부족하여 요청을 처리할 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     @PostMapping(value = "/use")
-    public ResponseEntity<String> spendPoint(@RequestBody PointRequest pointRequest) {
-        pointService.spendPoint(pointRequest.getUserId(), pointRequest.getAmount());
+    public ResponseEntity<String> usePoint(@RequestBody PointRequest pointRequest) {
+        pointService.usePoint(pointRequest.getUserId(), pointRequest.getAmount());
         return ResponseEntity.ok("포인트 사용이 완료되었습니다.");
     }
 }

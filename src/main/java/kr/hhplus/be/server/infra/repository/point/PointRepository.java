@@ -12,9 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface PointRepository extends JpaRepository<Point, Long> {
+    Optional<Point> findPointByUserId(Long userId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)  // 비관적 락 적용
     @Query("SELECT p FROM Point p WHERE p.userId = :userId")
-    Optional<Point> findPointByUserIdForUpdate(@Param("userId") Long userId);
-
-    Optional<Point> findPointByUserId(@Param("userId") Long userId);
+    Optional<Point> findPointForUpdateByUserId(@Param("userId") Long userId);
 }
