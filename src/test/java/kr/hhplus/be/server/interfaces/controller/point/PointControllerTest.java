@@ -177,7 +177,7 @@ class PointControllerTest {
     void usePoint_InsufficientBalance() throws Exception {
         // given
         given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
-        doThrow(new PointException(ErrorCode.INSUFFICIENT_POINT)).when(pointService).usePoint(1L, 50000);
+        doThrow(new PointException(ErrorCode.INSUFFICIENT_POINT)).when(pointService).spendPoint(1L, 50000);
         PointRequest request = PointRequest.builder()
                 .userId(1L)
                 .amount(50000)

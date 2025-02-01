@@ -57,7 +57,7 @@ class PointServiceTest {
         for (int i = 0; i < numThreads; i++) {
             executorService.execute(() -> {
                 try {
-                    pointService.charge(testUserId, deductionAmount);
+                    pointService.spendPoint(testUserId, deductionAmount);
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failureCount.incrementAndGet();
@@ -101,7 +101,7 @@ class PointServiceTest {
         for (int i = 0; i < numThreads; i++) {
             executorService.execute(() -> {
                 try {
-                    pointService.charge(testUserId, deductionAmount);
+                    pointService.spendPoint(testUserId, deductionAmount);
                 } catch (PointException e) {
                     failureCount.incrementAndGet(); // 예외 발생 횟수 기록
                 } finally {
