@@ -1,8 +1,6 @@
 package kr.hhplus.be.server.interfaces.controller.payment;
 
 import kr.hhplus.be.server.application.facade.payment.PaymentFacade;
-import kr.hhplus.be.server.domain.entity.payment.Payment;
-import kr.hhplus.be.server.domain.service.payment.PaymentService;
 import kr.hhplus.be.server.domain.service.token.TokenService;
 import kr.hhplus.be.server.interfaces.controller.payment.dto.PaymentRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -16,8 +14,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

@@ -7,15 +7,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import kr.hhplus.be.server.application.facade.payment.PaymentFacade;
-import kr.hhplus.be.server.domain.entity.payment.Payment;
+import kr.hhplus.be.server.common.error.ErrorResponse;
 import kr.hhplus.be.server.interfaces.controller.payment.dto.PaymentRequest;
 import kr.hhplus.be.server.interfaces.controller.payment.dto.PaymentResponse;
-import kr.hhplus.be.server.domain.service.payment.PaymentService;
-import kr.hhplus.be.server.common.error.ErrorResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
