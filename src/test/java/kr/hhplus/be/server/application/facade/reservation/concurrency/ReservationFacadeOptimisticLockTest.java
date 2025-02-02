@@ -3,12 +3,10 @@ package kr.hhplus.be.server.application.facade.reservation.concurrency.optimisti
 import kr.hhplus.be.server.application.facade.reservation.ReservationFacade;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;
-import kr.hhplus.be.server.domain.entity.reservation.ReservationOptimistic;
 import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
 import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenStatus;
 import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
-import kr.hhplus.be.server.infra.repository.reservation.ReservationOptimisticRepository;
 import kr.hhplus.be.server.infra.repository.reservation.ReservationRepository;
 import kr.hhplus.be.server.infra.repository.token.TokenRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,14 +38,14 @@ public class ReservationFacadeOptimisticLockTest {
     private ConcertSeatRepository concertSeatRepository;
 
     @Autowired
-    private ReservationOptimisticRepository reservationOptimisticRepository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
     private TokenRepository tokenRepository;
 
     @BeforeEach
     void tearDown() {
-        reservationOptimisticRepository.deleteAllInBatch();
+        reservationRepository.deleteAllInBatch();
         concertSeatRepository.deleteAllInBatch();
         tokenRepository.deleteAllInBatch();
     }
@@ -75,9 +73,9 @@ public class ReservationFacadeOptimisticLockTest {
         Long seatId = savedConcertSeat.getId();
 
         // when & then
-        assertDoesNotThrow(() -> reservationFacade.reserveWithOptimisticLock(userId, mockConcertSeat.getId(), savedToken.getUuid()));
+        assertDoesNotThrow(() -> reservationFacade.reserve(userId, mockConcertSeat.getId(), savedToken.getUuid()));
 
-        ReservationOptimistic reservation = reservationOptimisticRepository.findAll().get(0);
+        Reservation reservation = reservationRepository.findAll().get(0);
         assertThat(reservation).isNotNull();
         assertThat(reservation.getUserId()).isEqualTo(userId);
         assertThat(reservation.getSeatId()).isEqualTo(seatId);
@@ -111,7 +109,7 @@ public class ReservationFacadeOptimisticLockTest {
         // then
         assertEquals(2, successCount); // 모든 예약이 성공해야 함
 
-        List<ReservationOptimistic> reservations = reservationOptimisticRepository.findAll();
+        List<Reservation> reservations = reservationRepository.findAll();
         assertEquals(2, reservations.size());
 
         assertReservation(reservations, seatId1, 1L);
@@ -170,8 +168,8 @@ public class ReservationFacadeOptimisticLockTest {
         return tokenRepository.save(token);
     }
 
-    private void assertReservation(List<ReservationOptimistic> reservations, Long seatId, Long userId) {
-        ReservationOptimistic reservation = reservations.stream()
+    private void assertReservation(List<Reservation> reservations, Long seatId, Long userId) {
+        Reservation reservation = reservations.stream()
                 .filter(r -> r.getSeatId().equals(seatId))
                 .findFirst()
                 .orElse(null);
@@ -214,7 +212,7 @@ public class ReservationFacadeOptimisticLockTest {
 
     private boolean tryReserveSeat(Long userId, Long seatId, String uuid) {
         try {
-            reservationFacade.reserveWithOptimisticLock(userId, seatId, uuid);
+            reservationFacade.reserve(userId, seatId, uuid);
             return true;
         } catch (Exception e) {
             return false;

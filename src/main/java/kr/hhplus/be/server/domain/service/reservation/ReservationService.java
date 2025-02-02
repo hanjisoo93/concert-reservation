@@ -3,10 +3,8 @@ package kr.hhplus.be.server.domain.service.reservation;
 import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.common.exception.SystemException;
 import kr.hhplus.be.server.domain.entity.reservation.Reservation;
-import kr.hhplus.be.server.domain.entity.reservation.ReservationOptimistic;
 import kr.hhplus.be.server.domain.entity.reservation.ReservationStatus;
 import kr.hhplus.be.server.domain.exception.reservation.ReservationException;
-import kr.hhplus.be.server.infra.repository.reservation.ReservationOptimisticRepository;
 import kr.hhplus.be.server.infra.repository.reservation.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +24,6 @@ import java.util.Optional;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final ReservationOptimisticRepository reservationOptimisticRepository;
 
     @Transactional(readOnly = true)
     public void validateSeatReservation(Long seatId) {
@@ -50,7 +47,7 @@ public class ReservationService {
     }
 
     @Transactional(readOnly = true)
-    public Reservation validReservation(Long reservationId) {
+    public Reservation validateReservation(Long reservationId) {
         try {
             Reservation reservation = reservationRepository.findReservationById(reservationId)
                     .orElseThrow(() -> new ReservationException(ErrorCode.RESERVATION_NOT_FOUND));
@@ -76,52 +73,18 @@ public class ReservationService {
         }
     }
 
-    /**
-     * 낙관적 락 기반
-     */
     @Retryable(
             value = { DataIntegrityViolationException.class },
             maxAttempts = 3,
             backoff = @Backoff(delay = 500)
     )
     @Transactional
-    public void createReservationWithOptimisticLock(Long userId, Long seatId) {
-        try {
-            List<ReservationStatus> activeStatuses = List.of(ReservationStatus.PENDING, ReservationStatus.SUCCESS);
-
-            // 1. 좌석 예약 여부 조회
-            Optional<ReservationOptimistic> existingReservation = reservationOptimisticRepository.findReservationBySeatIdAndStatues(seatId, activeStatuses);
-
-            if (existingReservation.isPresent()) {
-                log.warn("좌석 예약 실패 - 다른 트랜잭션에서 이미 예약됨: seatId={}", seatId);
-                throw new ReservationException(ErrorCode.SEAT_ALREADY_RESERVED);
-            }
-
-            // 2. 예약 생성
-            ReservationOptimistic reservation = ReservationOptimistic.createReservation(userId, seatId);
-            reservationOptimisticRepository.save(reservation);
-
-            log.info("예약 생성 완료 - reservationId={}, userId={}, seatId={}", reservation.getId(), userId, seatId);
-
-        } catch (ReservationException e){
-            log.error("예약 생성 실패 - userId={}, seatId={}", userId, seatId, e);
-            throw e;
-        } catch (DataIntegrityViolationException e) {
-            log.warn("좌석 예약 실패 - 이미 예약됨: seatId={}", seatId);
-            throw new ReservationException(ErrorCode.SEAT_ALREADY_RESERVED);
-        } catch (Exception e) {
-            log.error("예약 생성 중 시스템 오류 발생 - userId={}, seatId={}", userId, seatId, e);
-            throw new SystemException(ErrorCode.SYSTEM_ERROR);
-        }
-    }
-
-    @Transactional
     public void createReservation(Long userId, Long seatId) {
         try {
             List<ReservationStatus> activeStatuses = List.of(ReservationStatus.PENDING, ReservationStatus.SUCCESS);
 
             // 1. 좌석 예약 여부 조회
-            Optional<Reservation> existingReservation = reservationRepository.findReservationBySeatIdForUpdate(seatId, activeStatuses);
+            Optional<Reservation> existingReservation = reservationRepository.findReservationBySeatIdAndStatues(seatId, activeStatuses);
 
             if (existingReservation.isPresent()) {
                 log.warn("좌석 예약 실패 - 다른 트랜잭션에서 이미 예약됨: seatId={}", seatId);
@@ -137,6 +100,9 @@ public class ReservationService {
         } catch (ReservationException e){
             log.error("예약 생성 실패 - userId={}, seatId={}", userId, seatId, e);
             throw e;
+        } catch (DataIntegrityViolationException e) {
+            log.warn("좌석 예약 실패 - 이미 예약됨: seatId={}", seatId);
+            throw new ReservationException(ErrorCode.SEAT_ALREADY_RESERVED);
         } catch (Exception e) {
             log.error("예약 생성 중 시스템 오류 발생 - userId={}, seatId={}", userId, seatId, e);
             throw new SystemException(ErrorCode.SYSTEM_ERROR);

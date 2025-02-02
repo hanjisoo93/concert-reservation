@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(name = "uq_seat_id", columnNames = {"seat_id"})})
 public class Reservation {
 
     @Id
@@ -21,6 +22,7 @@ public class Reservation {
 
     private Long userId;
 
+    @Column(name = "seat_id", unique = true)
     private Long seatId;
 
     @Enumerated(EnumType.STRING)
@@ -28,6 +30,9 @@ public class Reservation {
 
     private LocalDateTime expiredAt;
     private LocalDateTime createdAt;
+
+    @Version
+    private Integer version; // 낙관적 락 전용을 위한 버전 필드 추가
 
     @Builder
     private Reservation(Long id, Long userId, Long seatId, ReservationStatus status, LocalDateTime expiredAt, LocalDateTime createdAt) {

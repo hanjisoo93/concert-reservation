@@ -1,7 +1,9 @@
-package kr.hhplus.be.server.domain.service.reservation.concurrency.optimistic;
+package kr.hhplus.be.server.domain.service.reservation.concurrency;
 
 import kr.hhplus.be.server.domain.exception.reservation.ReservationException;
 import kr.hhplus.be.server.domain.service.reservation.ReservationService;
+import kr.hhplus.be.server.infra.repository.reservation.ReservationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,14 @@ public class ReservationOptimisticLockTest {
     @Autowired
     private ReservationService reservationService;
 
+    @Autowired
+    private ReservationRepository reservationRepository;
+
+    @BeforeEach
+    void tearDown() {
+        reservationRepository.deleteAllInBatch();
+    }
+
     @Test
     @DisplayName("낙관적 락을 이용한 동시 좌석 예약 테스트")
     void createReservation_concurrentRequests_optimisticLock() throws InterruptedException {
@@ -39,7 +49,7 @@ public class ReservationOptimisticLockTest {
             final Long userId = (long) (100 + i);
             executorService.execute(() -> {
                 try {
-                    reservationService.createReservationWithOptimisticLock(userId, seatId);
+                    reservationService.createReservation(userId, seatId);
                     successCount.incrementAndGet();
                 } catch (ReservationException e) {
                     failureCount.incrementAndGet();
