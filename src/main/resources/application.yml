@@ -14,6 +14,22 @@ spring:
       maximum-pool-size: 3
       connection-timeout: 10000
       max-lifetime: 60000
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    database: mysql
+    generate-ddl: true
+    open-in-view: false
+    show-sql: true
+
   data:
     redis:
       host: 127.0.0.1
