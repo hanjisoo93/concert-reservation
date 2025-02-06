@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,7 +46,7 @@ class ConcertScheduleControllerTest {
     @Test
     @DisplayName("콘서트 스케줄 조회 - 유효한 토큰이면 성공")
     void getConcertSchedules_Success() throws Exception {
-        // Given
+        // given
         Long concertId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -65,12 +64,13 @@ class ConcertScheduleControllerTest {
         List<ConcertScheduleResponse> schedules = List.of(mockResponse1, mockResponse2);
         Page<ConcertScheduleResponse> pageResponse = new PageImpl<>(schedules, pageable, schedules.size());
 
-        when(tokenService.isValidTokenByUuid("valid-token")).thenReturn(true);
+        // when
+        when(tokenService.isValidToken(1L)).thenReturn(true);
         when(concertScheduleService.getConcertSchedules(concertId, pageable)).thenReturn(pageResponse);
 
-        // When & Then
+        // then
         mockMvc.perform(get("/api/concert/schedule/{concertId}", concertId)
-                        .header("Authorization", "valid-token")
+                        .header("Authorization", "1")
                         .param("page", "0")
                         .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -90,12 +90,12 @@ class ConcertScheduleControllerTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<ConcertScheduleResponse> emptyPage = Page.empty(pageable);
 
-        when(tokenService.isValidTokenByUuid("valid-token")).thenReturn(true);
+        when(tokenService.isValidToken(1L)).thenReturn(true);
         when(concertScheduleService.getConcertSchedules(concertId, pageable)).thenReturn(emptyPage);
 
         // When & Then
         mockMvc.perform(get("/api/concert/schedule/{concertId}", concertId)
-                        .header("Authorization", "valid-token")
+                        .header("Authorization", "1")
                         .param("page", "0")
                         .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -122,11 +122,11 @@ class ConcertScheduleControllerTest {
     void getConcertSchedules_Fail_Unauthorized_InvalidToken() throws Exception {
         // Given
         Long concertId = 1L;
-        when(tokenService.isValidTokenByUuid("invalid-token")).thenReturn(false);
+        when(tokenService.isValidToken(1L)).thenReturn(false);
 
         // When & Then
         mockMvc.perform(get("/api/concert/schedule/{concertId}", concertId)
-                        .header("Authorization", "invalid-token")
+                        .header("Authorization", "1")
                         .param("page", "0")
                         .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))

@@ -28,9 +28,8 @@ public class ReservationController {
             @ApiResponse(responseCode = "404", description = "요청한 좌석 ID를 찾을 수 없습니다.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping(value = "/reserve", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> reserveSeat(@RequestHeader("Authorization") String token,
-                                              @RequestBody @Valid ReservationReserveRequest reservationRequest) {
-        reservationFacade.reserve(reservationRequest.getUserId(), reservationRequest.getSeatId(), token);
+    public ResponseEntity<String> reserveSeat(@RequestBody @Valid ReservationReserveRequest reservationRequest) {
+        reservationFacade.reserve(reservationRequest.getUserId(), reservationRequest.getSeatId());
         return ResponseEntity.ok("좌석이 성공적으로 예약 요청 되었습니다.");
     }
 }

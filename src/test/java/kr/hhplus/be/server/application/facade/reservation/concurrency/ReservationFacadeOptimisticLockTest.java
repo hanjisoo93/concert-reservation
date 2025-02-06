@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.facade.reservation.concurrency.optimistic;
+package kr.hhplus.be.server.application.facade.reservation.concurrency;
 
 import kr.hhplus.be.server.application.facade.reservation.ReservationFacade;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
@@ -73,7 +73,7 @@ public class ReservationFacadeOptimisticLockTest {
         Long seatId = savedConcertSeat.getId();
 
         // when & then
-        assertDoesNotThrow(() -> reservationFacade.reserve(userId, mockConcertSeat.getId(), savedToken.getUuid()));
+        assertDoesNotThrow(() -> reservationFacade.reserve(userId, mockConcertSeat.getId()));
 
         Reservation reservation = reservationRepository.findAll().get(0);
         assertThat(reservation).isNotNull();
@@ -81,8 +81,9 @@ public class ReservationFacadeOptimisticLockTest {
         assertThat(reservation.getSeatId()).isEqualTo(seatId);
         assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.PENDING);
 
-        Token updatedToken = tokenRepository.findAllByUserIdAndStatus(userId, TokenStatus.ACTIVE);
-        assertThat(updatedToken.getExpiredAt()).isAfter(LocalDateTime.now());
+//         @TODO Redis 토큰 확인으로 수정
+//        Token updatedToken = tokenRepository.findAllByUserIdAndStatus(userId, TokenStatus.ACTIVE);
+//        assertThat(updatedToken.getExpiredAt()).isAfter(LocalDateTime.now());
     }
 
     @Test
@@ -92,16 +93,13 @@ public class ReservationFacadeOptimisticLockTest {
         ConcertSeat mockConcertSeat1 = createAndSaveConcertSeat(1L, 25, 50000);
         ConcertSeat mockConcertSeat2 = createAndSaveConcertSeat(1L, 38, 50000);
 
-        Token mockToken1 = createAndSaveToken(1L);
-        Token mockToken2 = createAndSaveToken(2L);
-
         Long seatId1 = mockConcertSeat1.getId();
         Long seatId2 = mockConcertSeat2.getId();
 
         // when
         List<Callable<Boolean>> tasks = List.of(
-                () -> tryReserveSeat(1L, seatId1, mockToken1.getUuid()),
-                () -> tryReserveSeat(2L, seatId2, mockToken2.getUuid())
+                () -> tryReserveSeat(1L, seatId1),
+                () -> tryReserveSeat(2L, seatId2)
         );
 
         int successCount = executeConcurrentTasks(tasks);
@@ -122,16 +120,12 @@ public class ReservationFacadeOptimisticLockTest {
         // given
         ConcertSeat mockConcertSeat = createAndSaveConcertSeat(1L, 58, 100000);
 
-        Token mockToken1 = createAndSaveToken(1L);
-        Token mockToken2 = createAndSaveToken(2L);
-        Token mockToken3 = createAndSaveToken(3L);
-
         Long seatId = mockConcertSeat.getId();
 
         List<Callable<Boolean>> tasks = createConcurrentTasks(
-                () -> tryReserveSeat(1L, seatId, mockToken1.getUuid()),
-                () -> tryReserveSeat(2L, seatId, mockToken2.getUuid()),
-                () -> tryReserveSeat(3L, seatId, mockToken3.getUuid())
+                () -> tryReserveSeat(1L, seatId),
+                () -> tryReserveSeat(2L, seatId),
+                () -> tryReserveSeat(3L, seatId)
         );
 
         // When
@@ -210,9 +204,9 @@ public class ReservationFacadeOptimisticLockTest {
         return successCount.get();
     }
 
-    private boolean tryReserveSeat(Long userId, Long seatId, String uuid) {
+    private boolean tryReserveSeat(Long userId, Long seatId) {
         try {
-            reservationFacade.reserve(userId, seatId, uuid);
+            reservationFacade.reserve(userId, seatId);
             return true;
         } catch (Exception e) {
             return false;

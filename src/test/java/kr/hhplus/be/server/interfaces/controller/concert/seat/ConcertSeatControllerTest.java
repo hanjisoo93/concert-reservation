@@ -42,7 +42,7 @@ class ConcertSeatControllerTest {
     @Test
     @DisplayName("유효한 토큰으로 좌석 조회 성공")
     void getConcertSeats_Success() throws Exception {
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         ConcertSeat mockConcertSeat1 = ConcertSeat.builder()
                 .id((1L))
                 .concertScheduleId(1L)
@@ -63,7 +63,7 @@ class ConcertSeatControllerTest {
 
         mockMvc.perform(get("/api/concert/seats")
                         .param("concertScheduleId", "1")
-                        .header("Authorization", "valid-token"))
+                        .header("Authorization", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
@@ -71,12 +71,12 @@ class ConcertSeatControllerTest {
     @Test
     @DisplayName("유효한 토큰이지만 조회된 좌석이 없을 때 404 반환")
     void getConcertSeats_NotFound() throws Exception {
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         given(concertSeatService.getConcertSeats(1L)).willReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/concert/seats")
                         .param("concertScheduleId", "1")
-                        .header("Authorization", "valid-token"))
+                        .header("Authorization", "1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("해당 날짜에 콘서트 좌석이 없습니다."));
     }
@@ -84,7 +84,7 @@ class ConcertSeatControllerTest {
     @Test
     @DisplayName("유효한 토큰으로 콘서트 좌석 상세 조회 성공")
     void getConcertSeat_Success() throws Exception {
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         ConcertSeat mockSeat = ConcertSeat.builder()
                 .id((1L))
                 .concertScheduleId(1L)
@@ -93,7 +93,7 @@ class ConcertSeatControllerTest {
                 .build();
         given(concertSeatService.getConcertSeat(1L)).willReturn(mockSeat);
 
-        mockMvc.perform(get("/api/concert/seats/1").header("Authorization", "valid-token"))
+        mockMvc.perform(get("/api/concert/seats/1").header("Authorization", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.seatNumber").value(10))
                 .andExpect(jsonPath("$.price").value(50000));
@@ -102,10 +102,10 @@ class ConcertSeatControllerTest {
     @Test
     @DisplayName("좌석 상세 조회 시 존재하지 않는 좌석일 때 404 반환")
     void getConcertSeat_NotFound() throws Exception {
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         given(concertSeatService.getConcertSeat(1L)).willReturn(null);
 
-        mockMvc.perform(get("/api/concert/seats/1").header("Authorization", "valid-token"))
+        mockMvc.perform(get("/api/concert/seats/1").header("Authorization", "1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("해당 좌석을 찾을 수 없습니다."));
     }
@@ -113,11 +113,11 @@ class ConcertSeatControllerTest {
     @Test
     @DisplayName("인증되지 않은 사용자가 좌석 목록 조회 시 401 Unauthorized 반환")
     void getConcertSeats_Unauthorized() throws Exception {
-        given(tokenService.isValidTokenByUuid("invalid-token")).willReturn(false);
+        given(tokenService.isValidToken(1L)).willReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/concert/seats")
                         .param("concertScheduleId", "1")
-                        .header("Authorization", "invalid-token"))
+                        .header("Authorization", "1"))
                 .andExpect(status().isUnauthorized());
     }
 
