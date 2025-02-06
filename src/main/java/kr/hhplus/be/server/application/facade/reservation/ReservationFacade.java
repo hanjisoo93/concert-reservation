@@ -13,10 +13,9 @@ public class ReservationFacade {
 
     private final ConcertSeatService concertSeatService;
     private final ReservationService reservationService;
-    private final TokenService tokenService;
 
     @Transactional
-    public void reserve(Long userId, Long seatId, String uuid) {
+    public void reserve(Long userId, Long seatId) {
         // 1. 좌석 확인
         concertSeatService.getConcertSeat(seatId);
 
@@ -27,6 +26,6 @@ public class ReservationFacade {
         reservationService.createReservation(userId, seatId);
 
         // 4. 토큰 만료 시간 연장
-        tokenService.updateTokenExpiredAt(uuid, 5);
+        // @TODO 활성화 토큰 만료 시간 연장
     }
 }
