@@ -1,14 +1,17 @@
 package kr.hhplus.be.server.domain.service.token;
 
+import kr.hhplus.be.server.domain.entity.token.TokenType;
 import kr.hhplus.be.server.domain.service.token.TokenService;
 import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenStatus;
+import kr.hhplus.be.server.infra.repository.token.TokenRedisRepository;
 import kr.hhplus.be.server.infra.repository.token.TokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -24,57 +27,44 @@ public class TokenValidationTest {
     private TokenService tokenService;
 
     @Autowired
-    private TokenRepository tokenRepository;
+    private TokenRedisRepository tokenRedisRepository;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    private final String activeKey = TokenType.ACTIVE.getKeyPrefix();
 
     @BeforeEach
     void tearDown() {
-        tokenRepository.deleteAllInBatch();
+        redisTemplate.delete(activeKey);
     }
+
     @Test
-    @DisplayName("유효한 UUID 토큰 검증")
-    void isValidTokenByUuid_validToken() {
+    @DisplayName("유효한 토큰 검증 - 토큰이 존재하면 true")
+    void isValidToken_validToken() {
         // given
-        Token validToken = Token.builder()
-                .uuid("e1b2c3d4-5678-90ab-cdef-1234567890ab")
-                .userId(1L)
-                .status(TokenStatus.ACTIVE)
-                .expiredAt(LocalDateTime.now().plusMinutes(10))
-                .build();
-        tokenRepository.save(validToken);
+        Long userId = 1L;
+        String value = String.valueOf(userId);
+        double score = System.currentTimeMillis() + (TokenType.ACTIVE.getTtlSeconds() * 1000L);
+        tokenRedisRepository.saveToken(activeKey, value, score);
 
         // when
-        boolean result = tokenService.isValidTokenByUuid("e1b2c3d4-5678-90ab-cdef-1234567890ab");
+        boolean valid = tokenService.isValidToken(userId);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(valid).isTrue();
     }
 
     @Test
-    @DisplayName("만료된 UUID 토큰 검증 실패")
-    void isValidTokenByUuid_expiredToken() {
+    @DisplayName("유효한 토큰 검증 - 토큰이 없으면 false")
+    void isValidToken_tokenNotFound() {
         // given
-        Token expiredToken = Token.builder()
-                .uuid("e1b2c3d4-5678-90ab-cdef-1234567890ab")
-                .userId(1L)
-                .status(TokenStatus.WAIT)
-                .expiredAt(LocalDateTime.now().minusMinutes(10))
-                .build();
-        tokenRepository.save(expiredToken);
+        Long userId = 2L;
 
         // when
-        boolean result = tokenService.isValidTokenByUuid("e1b2c3d4-5678-90ab-cdef-1234567890ab");
+        boolean valid = tokenService.isValidToken(userId);
 
         // then
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    @DisplayName("UUID 토큰이 존재하지 않을 경우 검증 실패")
-    void isValidTokenByUuid_tokenNotFound() {
-        // when
-        boolean result = tokenService.isValidTokenByUuid("non-existent-uuid");
-
-        // then
-        assertThat(result).isFalse();
+        assertThat(valid).isFalse();
     }
 }
