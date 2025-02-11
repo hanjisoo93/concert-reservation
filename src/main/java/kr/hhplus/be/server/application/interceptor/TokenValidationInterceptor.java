@@ -18,15 +18,31 @@ public class TokenValidationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String tokenUuid = request.getHeader("Authorization");
-
-        if (tokenUuid == null || !tokenService.isValidTokenByUuid(tokenUuid)) {
-            log.warn("대기열 검증 실패 - Authorization 헤더 없음 또는 유효하지 않은 토큰");
+        String userIdStr = request.getHeader("Authorization");
+        if (userIdStr == null) {
+            log.warn("대기열 검증 실패 - Authorization 헤더 없음");
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized: 유효한 토큰이 필요합니다.");
             return false;
         }
 
-        log.info("대기열 검증 성공 - tokenUuid={}", tokenUuid);
+        Long userId;
+        try {
+            userId = Long.parseLong(userIdStr);
+        } catch (NumberFormatException e) {
+            log.warn("대기열 검증 실패 - Authorization 헤더의 userId 형식 오류: {}", userIdStr);
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized: 올바른 userId 형식이 필요합니다.");
+            return false;
+        }
+
+        boolean valid = tokenService.isValidToken(userId);
+        if (!valid) {
+            log.warn("대기열 검증 실패 - 유효한 토큰이 존재하지 않음: userId={}", userId);
+            response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized: 유효한 토큰이 필요합니다.");
+            return false;
+        }
+
+        log.info("대기열 검증 성공 - userId={}", userId);
         return true;
     }
 }
+

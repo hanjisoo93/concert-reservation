@@ -23,7 +23,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,7 +53,7 @@ class PointControllerTest {
     @DisplayName("유효한 토큰으로 포인트 조회 성공")
     void getPoint_Success() throws Exception {
         // given
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
 
         Point mockPoint = Point.builder()
                 .userId(1L)
@@ -65,7 +64,7 @@ class PointControllerTest {
 
         // when & then
         mockMvc.perform(get("/api/point/1")
-                        .header("Authorization", "valid-token"))
+                        .header("Authorization", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(1))
                 .andExpect(jsonPath("$.amount").value(50000));
@@ -75,20 +74,21 @@ class PointControllerTest {
     @DisplayName("존재하지 않는 사용자로 포인트 조회 시 404 반환")
     void getPoint_NotFound() throws Exception {
         // given
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         given(pointService.getPoint(1L)).willThrow(new PointException(ErrorCode.POINT_NOT_FOUND));
 
         // when & then
         mockMvc.perform(get("/api/point/1")
-                        .header("Authorization", "valid-token"))
+                        .header("Authorization", "1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("포인트 정보가 존재하지 않습니다."));
     }
+
     @Test
     @DisplayName("유효한 토큰으로 포인트 내역 조회 성공")
     void getPointHistory_Success() throws Exception {
         // given
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
 
         PointHistory mockPointHistory1 = PointHistory.builder()
                 .userId(1L)
@@ -111,7 +111,7 @@ class PointControllerTest {
 
         // when & then
         mockMvc.perform(get("/api/point/history/1")
-                        .header("Authorization", "valid-token"))
+                        .header("Authorization", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].changeAmount").value(10000))
@@ -124,12 +124,12 @@ class PointControllerTest {
     @DisplayName("포인트 내역이 없을 때 404 반환")
     void getPointHistory_NotFound() throws Exception {
         // given
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         given(pointHistoryService.getPointHistories(1L)).willThrow(new PointException(ErrorCode.POINT_NOT_FOUND));
 
         // when & then
         mockMvc.perform(get("/api/point/history/1")
-                        .header("Authorization", "valid-token"))
+                        .header("Authorization", "1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("포인트 정보가 존재하지 않습니다."));
     }
@@ -138,7 +138,7 @@ class PointControllerTest {
     @DisplayName("유효한 토큰으로 포인트 충전 성공")
     void addPoint_Success() throws Exception {
         // given
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         PointRequest request = PointRequest.builder()
                 .userId(1L)
                 .amount(10000)
@@ -146,7 +146,7 @@ class PointControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/point/add")
-                        .header("Authorization", "valid-token")
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -157,7 +157,7 @@ class PointControllerTest {
     @DisplayName("유효한 토큰으로 포인트 사용 성공")
     void usePoint_Success() throws Exception {
         // given
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         PointRequest request = PointRequest.builder()
                 .userId(1L)
                 .amount(5000)
@@ -165,7 +165,7 @@ class PointControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/point/use")
-                        .header("Authorization", "valid-token")
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -176,7 +176,7 @@ class PointControllerTest {
     @DisplayName("포인트 잔액 부족 시 400 반환")
     void usePoint_InsufficientBalance() throws Exception {
         // given
-        given(tokenService.isValidTokenByUuid("valid-token")).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
         doThrow(new PointException(ErrorCode.INSUFFICIENT_POINT)).when(pointService).usePoint(1L, 50000);
         PointRequest request = PointRequest.builder()
                 .userId(1L)
@@ -185,7 +185,7 @@ class PointControllerTest {
 
         // when & then
         mockMvc.perform(post("/api/point/use")
-                        .header("Authorization", "valid-token")
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())

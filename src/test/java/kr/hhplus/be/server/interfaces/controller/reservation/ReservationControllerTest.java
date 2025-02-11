@@ -15,7 +15,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -42,8 +41,7 @@ class ReservationControllerTest {
     @DisplayName("유효한 요청으로 좌석 예약 성공")
     void reserveSeat_Success() throws Exception {
         // given
-        String validToken = "valid-token";
-        given(tokenService.isValidTokenByUuid(validToken)).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
 
         ReservationReserveRequest request = ReservationReserveRequest.builder()
                 .userId(1L)
@@ -52,7 +50,7 @@ class ReservationControllerTest {
 
         // when & then
         mockMvc.perform(post(BASE_URL)
-                        .header("Authorization", validToken)
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -63,8 +61,7 @@ class ReservationControllerTest {
     @DisplayName("유효한 토큰이지만 좌석이 존재하지 않으면 404 반환")
     void reserveSeat_SeatNotFound() throws Exception {
         // given
-        String validToken = "valid-token";
-        given(tokenService.isValidTokenByUuid(validToken)).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
 
         ReservationReserveRequest request = ReservationReserveRequest.builder()
                 .userId(1L)
@@ -72,11 +69,11 @@ class ReservationControllerTest {
                 .build();
         doThrow(new ReservationException(ErrorCode.SEAT_NOT_FOUND))
                 .when(reservationFacade)
-                .reserve(request.getUserId(), request.getSeatId(), validToken);
+                .reserve(request.getUserId(), request.getSeatId());
 
         // when & then
         mockMvc.perform(post(BASE_URL)
-                        .header("Authorization", validToken)
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isNotFound());
@@ -86,8 +83,7 @@ class ReservationControllerTest {
     @DisplayName("이미 예약된 좌석을 예약하려 하면 400 반환")
     void reserveSeat_AlreadyReserved() throws Exception {
         // given
-        String validToken = "valid-token";
-        given(tokenService.isValidTokenByUuid(validToken)).willReturn(true);
+        given(tokenService.isValidToken(1L)).willReturn(true);
 
         ReservationReserveRequest request = ReservationReserveRequest.builder()
                 .userId(1L)
@@ -95,11 +91,11 @@ class ReservationControllerTest {
                 .build();
         doThrow(new ReservationException(ErrorCode.SEAT_ALREADY_RESERVED))
                 .when(reservationFacade)
-                .reserve(request.getUserId(), request.getSeatId(), validToken);
+                .reserve(request.getUserId(), request.getSeatId());
 
         // when & then
         mockMvc.perform(post(BASE_URL)
-                        .header("Authorization", validToken)
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -109,8 +105,7 @@ class ReservationControllerTest {
     @DisplayName("유효하지 않은 토큰으로 요청 시 401 Unauthorized 반환")
     void reserveSeat_InvalidToken() throws Exception {
         // given
-        String invalidToken = "invalid-token";
-        given(tokenService.isValidTokenByUuid(invalidToken)).willReturn(false);
+        given(tokenService.isValidToken(1L)).willReturn(false);
 
         ReservationReserveRequest request = ReservationReserveRequest.builder()
                 .userId(1L)
@@ -119,7 +114,7 @@ class ReservationControllerTest {
 
         // when & then
         mockMvc.perform(post(BASE_URL)
-                        .header("Authorization", invalidToken)
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(request)))
                 .andExpect(status().isUnauthorized());

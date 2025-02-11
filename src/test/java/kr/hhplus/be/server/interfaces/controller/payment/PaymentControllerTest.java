@@ -45,12 +45,12 @@ class PaymentControllerTest {
                 .build();
         String requestBody = new ObjectMapper().writeValueAsString(request);
 
-        String validToken = "valid-token";
-        when(tokenService.isValidTokenByUuid(validToken)).thenReturn(true);
+        // when
+        when(tokenService.isValidToken(1L)).thenReturn(true);
 
-        // when & then
+        // then
         mockMvc.perform(post(BASE_URL)
-                        .header("Authorization", validToken)
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
@@ -88,12 +88,12 @@ class PaymentControllerTest {
                 .build();
         String requestBody = new ObjectMapper().writeValueAsString(request);
 
-        String invalidToken = "invalid-token";
-        when(tokenService.isValidTokenByUuid(invalidToken)).thenReturn(false);
+        // when
+        when(tokenService.isValidToken(1L)).thenReturn(false);
 
-        // when & then
+        // then
         mockMvc.perform(post(BASE_URL)
-                        .header("Authorization", invalidToken)
+                        .header("Authorization", "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isUnauthorized());
