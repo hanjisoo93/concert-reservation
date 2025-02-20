@@ -15,15 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+
     @Transactional
     public void createPayment(Long userId, Long reservationId, int amount) {
         try {
             Payment payment = Payment.createPayment(userId, reservationId, amount);
             paymentRepository.save(payment);
-            log.info("결제 완료 - paymentId={}, userId={}, reservationId={}, amount={}",
-                    payment.getId(), userId, reservationId, amount);
         } catch (Exception e) {
-            log.error("결제 생성 실패 - userId={}, reservationId={}, amount={}", userId, reservationId, amount, e);
             throw new SystemException(ErrorCode.SYSTEM_ERROR);
         }
     }

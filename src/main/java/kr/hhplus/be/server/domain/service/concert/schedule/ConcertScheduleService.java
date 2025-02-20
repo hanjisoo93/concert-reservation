@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.service.concert.schedule;
 
-import kr.hhplus.be.server.interfaces.controller.concert.schedule.dto.ConcertScheduleResponse;
+import kr.hhplus.be.server.interfaces.api.controller.concert.schedule.dto.ConcertScheduleResponse;
 import kr.hhplus.be.server.domain.entity.concert.schedule.ConcertSchedule;
 import kr.hhplus.be.server.infra.repository.concert.schedule.ConcertScheduleRepository;
 import lombok.RequiredArgsConstructor;

@@ -2,7 +2,7 @@ package kr.hhplus.be.server.interfaces.controller.concert.schedule;
 
 import kr.hhplus.be.server.domain.service.concert.schedule.ConcertScheduleService;
 import kr.hhplus.be.server.domain.service.token.TokenService;
-import kr.hhplus.be.server.interfaces.controller.concert.schedule.dto.ConcertScheduleResponse;
+import kr.hhplus.be.server.interfaces.api.controller.concert.schedule.dto.ConcertScheduleResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

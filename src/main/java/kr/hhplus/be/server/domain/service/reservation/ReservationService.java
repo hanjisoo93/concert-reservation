@@ -83,28 +83,19 @@ public class ReservationService {
         try {
             List<ReservationStatus> activeStatuses = List.of(ReservationStatus.PENDING, ReservationStatus.SUCCESS);
 
-            // 1. 좌석 예약 여부 조회
             Optional<Reservation> existingReservation = reservationRepository.findReservationBySeatIdAndStatues(seatId, activeStatuses);
 
             if (existingReservation.isPresent()) {
-                log.warn("좌석 예약 실패 - 다른 트랜잭션에서 이미 예약됨: seatId={}", seatId);
                 throw new ReservationException(ErrorCode.SEAT_ALREADY_RESERVED);
             }
 
-            // 2. 예약 생성
             Reservation reservation = Reservation.createReservation(userId, seatId);
             reservationRepository.save(reservation);
-
-            log.info("예약 생성 완료 - reservationId={}, userId={}, seatId={}", reservation.getId(), userId, seatId);
-
         } catch (ReservationException e){
-            log.error("예약 생성 실패 - userId={}, seatId={}", userId, seatId, e);
             throw e;
         } catch (DataIntegrityViolationException e) {
-            log.warn("좌석 예약 실패 - 이미 예약됨: seatId={}", seatId);
             throw new ReservationException(ErrorCode.SEAT_ALREADY_RESERVED);
         } catch (Exception e) {
-            log.error("예약 생성 중 시스템 오류 발생 - userId={}, seatId={}", userId, seatId, e);
             throw new SystemException(ErrorCode.SYSTEM_ERROR);
         }
     }
@@ -116,12 +107,9 @@ public class ReservationService {
                     .orElseThrow(() -> new ReservationException(ErrorCode.RESERVATION_NOT_FOUND));
 
             reservation.updateStatus(status);
-            log.info("예약 상태 업데이트 완료 - reservationId={}, newStatus={}", reservationId, status);
         } catch (ReservationException e) {
-            log.warn("예약 상태 업데이트 실패 - reservationId={}, status={}", reservationId, status, e);
             throw e;
         } catch (Exception e) {
-            log.error("예약 상태 업데이트 중 시스템 오류 발생 - reservationId={}, status={}", reservationId, status, e);
             throw new SystemException(ErrorCode.SYSTEM_ERROR);
         }
     }

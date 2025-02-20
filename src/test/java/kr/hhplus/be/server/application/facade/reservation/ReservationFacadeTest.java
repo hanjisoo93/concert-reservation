@@ -57,14 +57,6 @@ class ReservationFacadeTest {
                 .build();
         ConcertSeat savedConcertSeat = concertSeatRepository.save(mockConcertSeat);
 
-        Token mockToken = Token.builder()
-                .userId(1L)
-                .status(TokenStatus.ACTIVE)
-                .expiredAt(LocalDateTime.now().plusMinutes(30))
-                .createdAt(LocalDateTime.now())
-                .build();
-        Token savedToken = tokenRepository.save(mockToken);
-
         Long userId = 1L;
         Long seatId = savedConcertSeat.getId();
 
@@ -94,14 +86,6 @@ class ReservationFacadeTest {
                 .build();
         ConcertSeat savedConcertSeat = concertSeatRepository.save(mockConcertSeat);
 
-        Token token = Token.builder()
-                .userId(1L)
-                .status(TokenStatus.ACTIVE)
-                .expiredAt(LocalDateTime.now().plusMinutes(30))
-                .createdAt(LocalDateTime.now())
-                .build();
-        Token savedToken = tokenRepository.save(token);
-
         Reservation reservation = Reservation.createReservation(1L, savedConcertSeat.getId());
         reservationRepository.save(reservation);
 
@@ -118,14 +102,6 @@ class ReservationFacadeTest {
     @DisplayName("존재하지 않는 좌석 예외 발생")
     void reserveInvalidSeat() {
         // given
-        Token token = Token.builder()
-                .userId(1L)
-                .status(TokenStatus.ACTIVE)
-                .expiredAt(LocalDateTime.now().plusMinutes(30))
-                .createdAt(LocalDateTime.now())
-                .build();
-        Token savedToken = tokenRepository.save(token);
-
         Long userId = 1L;
         Long invalidSeatId = 999L;
 

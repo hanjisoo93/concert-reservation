@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.service.token;
 
+import kr.hhplus.be.server.domain.entity.token.Token;
 import kr.hhplus.be.server.domain.entity.token.TokenType;
 import kr.hhplus.be.server.infra.repository.token.TokenRedisRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +63,7 @@ class TokenServiceTest {
         ExecutorService executor = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(numberOfUsers);
 
-        List<String> resultList = Collections.synchronizedList(new ArrayList<>());
+        List<Token> resultList = Collections.synchronizedList(new ArrayList<>());
         AtomicInteger errorCount = new AtomicInteger(0);
 
         List<Long> userIds = IntStream.rangeClosed(1, numberOfUsers).mapToObj(Long::valueOf).toList();
@@ -71,7 +72,7 @@ class TokenServiceTest {
         for (Long userId : userIds) {
             executor.submit(() -> {
                 try {
-                    String result = tokenService.issueWaitToken(userId);
+                    Token result = tokenService.issueWaitToken(userId);
                     resultList.add(result);
                 } catch (Exception e) {
                     errorCount.incrementAndGet();
@@ -86,7 +87,6 @@ class TokenServiceTest {
         executor.shutdown();
 
         // then
-        assertTrue(resultList.contains("NEW_WAIT_TOKEN"), "새로운 토큰이 반드시 포함되어야 함");
         assertEquals(0, errorCount.get(), "예외 발생 없이 모든 요청이 성공해야 함");
         assertEquals(numberOfUsers, resultList.size(), "모든 요청이 응답을 받아야 함");
     }

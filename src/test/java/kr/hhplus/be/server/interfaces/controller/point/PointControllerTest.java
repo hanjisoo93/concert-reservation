@@ -8,7 +8,7 @@ import kr.hhplus.be.server.domain.exception.point.PointException;
 import kr.hhplus.be.server.domain.service.point.PointHistoryService;
 import kr.hhplus.be.server.domain.service.point.PointService;
 import kr.hhplus.be.server.domain.service.token.TokenService;
-import kr.hhplus.be.server.interfaces.controller.point.dto.PointRequest;
+import kr.hhplus.be.server.interfaces.api.controller.point.dto.PointRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

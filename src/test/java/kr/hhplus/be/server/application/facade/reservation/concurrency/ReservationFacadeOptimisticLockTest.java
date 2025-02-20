@@ -61,14 +61,6 @@ public class ReservationFacadeOptimisticLockTest {
                 .build();
         ConcertSeat savedConcertSeat = concertSeatRepository.save(mockConcertSeat);
 
-        Token mockToken = Token.builder()
-                .userId(1L)
-                .status(TokenStatus.ACTIVE)
-                .expiredAt(LocalDateTime.now().plusMinutes(30))
-                .createdAt(LocalDateTime.now())
-                .build();
-        Token savedToken = tokenRepository.save(mockToken);
-
         Long userId = 1L;
         Long seatId = savedConcertSeat.getId();
 
@@ -149,17 +141,6 @@ public class ReservationFacadeOptimisticLockTest {
     @SafeVarargs
     private final List<Callable<Boolean>> createConcurrentTasks(Callable<Boolean>... tasks) {
         return Arrays.asList(tasks);
-    }
-
-    private Token createAndSaveToken(Long userId) {
-        Token token = Token.builder()
-                .userId(userId)
-                .uuid(java.util.UUID.randomUUID().toString())
-                .status(TokenStatus.ACTIVE)
-                .expiredAt(LocalDateTime.now().plusMinutes(30))
-                .createdAt(LocalDateTime.now())
-                .build();
-        return tokenRepository.save(token);
     }
 
     private void assertReservation(List<Reservation> reservations, Long seatId, Long userId) {

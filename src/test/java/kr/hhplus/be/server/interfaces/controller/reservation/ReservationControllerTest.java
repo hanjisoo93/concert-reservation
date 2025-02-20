@@ -4,7 +4,7 @@ import kr.hhplus.be.server.application.facade.reservation.ReservationFacade;
 import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.domain.exception.reservation.ReservationException;
 import kr.hhplus.be.server.domain.service.token.TokenService;
-import kr.hhplus.be.server.interfaces.controller.reservation.dto.ReservationReserveRequest;
+import kr.hhplus.be.server.interfaces.api.controller.reservation.dto.ReservationReserveRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

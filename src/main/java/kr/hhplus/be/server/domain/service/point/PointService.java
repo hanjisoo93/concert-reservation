@@ -52,10 +52,7 @@ public class PointService {
      */
     @Transactional
     public void spendPoint(Long userId, int amount) {
-        // 1. 포인트 사용 처리
         Point currentPoint = usePoint(userId, amount);
-
-        // 2. 포인트 히스토리 저장
         pointHistoryService.createPointHistory(userId, amount, currentPoint.getAmount(), PointChangeType.WITHDRAWAL);
     }
 

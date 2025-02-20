@@ -3,8 +3,6 @@ package kr.hhplus.be.server.domain.service.concert.seat;
 import kr.hhplus.be.server.common.exception.ErrorCode;
 import kr.hhplus.be.server.common.exception.SystemException;
 import kr.hhplus.be.server.domain.exception.concert.seat.ConcertSeatNotFoundException;
-import kr.hhplus.be.server.interfaces.controller.concert.seat.ConcertSeatController;
-import kr.hhplus.be.server.interfaces.controller.concert.seat.dto.ConcertSeatResponse;
 import kr.hhplus.be.server.domain.entity.concert.seat.ConcertSeat;
 import kr.hhplus.be.server.infra.repository.concert.seat.ConcertSeatRepository;
 import lombok.RequiredArgsConstructor;
