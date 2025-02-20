@@ -110,7 +110,7 @@ public class PaymentFacadeRedissonLockTest {
             tasks.add(() -> {
                 try {
                     barrier.await(); // 모든 스레드가 동시에 실행되도록 대기
-                    paymentFacade.payment(savedReservation.getId()); // 동일한 예약 ID 사용
+                    paymentFacade.paymentProcess(savedReservation.getId()); // 동일한 예약 ID 사용
                     successCount.incrementAndGet();
                 } catch (PointException e) { // 포인트 부족 등의 예외 처리
                     failureCount.incrementAndGet();

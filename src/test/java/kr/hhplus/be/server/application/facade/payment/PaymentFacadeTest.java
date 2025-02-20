@@ -86,7 +86,7 @@ class PaymentFacadeTest {
         Reservation savedReservation = reservationRepository.save(mockReservation);
 
         // when
-        paymentFacade.payment(savedReservation.getId());
+        paymentFacade.paymentProcess(savedReservation.getId());
 
         // then
         // 1. 예약 상태 확인
@@ -134,7 +134,7 @@ class PaymentFacadeTest {
         Reservation savedReservation = reservationRepository.save(mockReservation);
 
         // when & then
-        assertThatThrownBy(() -> paymentFacade.payment(savedReservation.getId()))
+        assertThatThrownBy(() -> paymentFacade.paymentProcess(savedReservation.getId()))
                 .isInstanceOf(PointException.class)
                 .hasMessage("포인트가 부족합니다.");
     }
@@ -160,7 +160,7 @@ class PaymentFacadeTest {
         Reservation savedReservation = reservationRepository.save(mockReservation);
 
         // when & then
-        assertThatThrownBy(() -> paymentFacade.payment(savedReservation.getId()))
+        assertThatThrownBy(() -> paymentFacade.paymentProcess(savedReservation.getId()))
                 .isInstanceOf(ReservationException.class)
                 .hasMessage("예약 요청 가능한 시간이 만료되었습니다.");
     }
@@ -169,7 +169,7 @@ class PaymentFacadeTest {
     @DisplayName("존재하지 않는 예약으로 결제 실패")
     void processPaymentWithNonExistentReservation() {
         // when & then
-        assertThatThrownBy(() -> paymentFacade.payment(999L)) // 존재하지 않는 예약 ID
+        assertThatThrownBy(() -> paymentFacade.paymentProcess(999L)) // 존재하지 않는 예약 ID
                 .isInstanceOf(ReservationException.class)
                 .hasMessageContaining("예약 정보를 찾을 수 없습니다.");
     }

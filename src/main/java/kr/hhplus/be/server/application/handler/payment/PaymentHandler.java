@@ -14,19 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PaymentHandler {
 
-    private final ReservationService reservationService;
     private final PointService pointService;
     private final PaymentService paymentService;
 
     @Transactional
     public void payment(Long reservationId, Reservation reservation, ConcertSeat concertSeat) {
-        // 1. 포인트 처리
         pointService.spendPoint(reservation.getUserId(), concertSeat.getPrice());
-
-        // 2. 결제 등록
         paymentService.createPayment(reservation.getUserId(), reservationId, concertSeat.getPrice());
-
-        // 3. 예약 상태 변경
-        reservationService.updateReservationStatus(reservationId, ReservationStatus.SUCCESS);
     }
 }

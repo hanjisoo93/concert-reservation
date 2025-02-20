@@ -2,7 +2,7 @@ package kr.hhplus.be.server.interfaces.controller.payment;
 
 import kr.hhplus.be.server.application.facade.payment.PaymentFacade;
 import kr.hhplus.be.server.domain.service.token.TokenService;
-import kr.hhplus.be.server.interfaces.controller.payment.dto.PaymentRequest;
+import kr.hhplus.be.server.interfaces.api.controller.payment.dto.PaymentRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ class PaymentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("결제가 성공적으로 처리되었습니다."));
 
-        verify(paymentFacade, times(1)).payment(1L);
+        verify(paymentFacade, times(1)).paymentProcess(1L);
     }
 
     @Test
