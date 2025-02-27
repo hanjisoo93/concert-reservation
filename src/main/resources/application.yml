@@ -53,3 +53,18 @@ spring:
           max-idle: 5
           min-idle: 1
           max-wait: 2000ms
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    database: mysql
+    generate-ddl: true
+    open-in-view: false
+    show-sql: true

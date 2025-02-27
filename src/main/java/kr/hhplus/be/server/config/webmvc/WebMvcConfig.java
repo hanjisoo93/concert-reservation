@@ -18,6 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry){
         registry.addInterceptor(tokenValidationInterceptor)
                 .addPathPatterns("/api/**") // 모든 API에 대기열 검증 적용
-                .excludePathPatterns("/api/tokens/**");
+                .excludePathPatterns("/api/tokens/**")
+                .excludePathPatterns("/api/payment/**");
     }
 }
