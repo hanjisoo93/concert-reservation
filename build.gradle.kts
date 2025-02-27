@@ -54,6 +54,11 @@ dependencies {
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
+	// Server testContainer for K6
+	implementation("org.testcontainers:testcontainers:1.19.3")
+	implementation("org.testcontainers:mysql:1.19.3")
+	implementation("org.testcontainers:junit-jupiter:1.19.3")
+
     // Test & Docker testContainer
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
