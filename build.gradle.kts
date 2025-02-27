@@ -37,6 +37,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.retry:spring-retry")
 
+	// Kafka
+	implementation("org.springframework.kafka:spring-kafka:3.0.0")
+
 	// Redis
 	implementation("org.apache.commons:commons-pool2:2.11.1")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:3.1.5")
@@ -56,6 +59,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
+	testImplementation("org.testcontainers:kafka")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	// Lombok
